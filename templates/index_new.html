@@ -10,29 +10,28 @@
     <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <style>
         :root {
-            /* 🔥 浅色清新风主题 - 渐变蓝紫 */
-            --primary: #667eea;
-            --primary-light: #8897ed;
-            --primary-dark: #5a6fd6;
-            --primary-lighter: #f0f0ff;
-            --primary-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            --secondary: #10b981;
-            --success: #10b981;
-            --error: #ef4444;
-            --warning: #F59E0B;
-            --bg-light: #FAFBFC;
+            /* 🔥 浅蓝色主题 */
+            --primary: #4A90E2;
+            --primary-light: #7AB3F0;
+            --primary-dark: #357ABD;
+            --primary-lighter: #E8F4FD;
+            --secondary: #50C878;
+            --success: #50C878;
+            --error: #E74C3C;
+            --warning: #F5A623;
+            --bg-light: #F5F9FC;
             --bg-white: #ffffff;
-            --bg-blue-light: #F0F4F8;
-            --text-main: #1F2937;
-            --text-secondary: #6B7280;
-            --text-muted: #9CA3AF;
-            --text-placeholder: #D1D5DB;
-            --border-light: #E5E7EB;
-            --border-hover: #CBD5E1;
-            --shadow-sm: 0 2px 8px rgba(102, 126, 234, 0.08);
-            --shadow-md: 0 4px 16px rgba(102, 126, 234, 0.12);
-            --shadow-lg: 0 8px 32px rgba(102, 126, 234, 0.18);
-            --shadow-primary: 0 4px 20px rgba(102, 126, 234, 0.3);
+            --bg-blue-light: #EEF5FE;
+            --text-main: #2C3E50;
+            --text-secondary: #5D6D7E;
+            --text-muted: #95A5A6;
+            --text-placeholder: #BDC3C7;
+            --border-light: #D5E4F1;
+            --border-hover: #B8D0E8;
+            --shadow-sm: 0 2px 6px rgba(74, 144, 226, 0.08);
+            --shadow-md: 0 4px 12px rgba(74, 144, 226, 0.12);
+            --shadow-lg: 0 8px 25px rgba(74, 144, 226, 0.18);
+            --shadow-primary: 0 4px 20px rgba(74, 144, 226, 0.25);
             --radius-sm: 8px;
             --radius-md: 12px;
             --radius-lg: 16px;
@@ -54,14 +53,12 @@
             background-color: var(--bg-light);
             color: var(--text-main);
             line-height: 1.6;
-            overflow-y: auto;
-            overflow-x: hidden;
         }
 
-        /* 顶部导航 - 渐变主题 */
+        /* 顶部导航 - 浅蓝色主题 */
         .top-nav {
             height: var(--header-height);
-            background: var(--primary-gradient);
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
             display: flex;
             align-items: center;
             padding: 0 32px;
@@ -118,39 +115,24 @@
         /* 主容器 */
         .container {
             display: flex;
-            flex: 1;
             max-width: 1600px;
             margin: 0 auto;
             padding: 24px;
             gap: 24px;
-            min-height: 0;
         }
 
         /* 侧边栏 */
         .sidebar-nav {
             width: var(--sidebar-width);
-            min-height: 80vh;
-            max-height: calc(100vh - 80px);
             background: var(--bg-white);
             border-radius: var(--radius-lg);
             box-shadow: var(--shadow-sm);
             padding: 20px 16px;
             display: flex;
             flex-direction: column;
-            overflow-y: auto;
-        }
-
-        .sidebar-nav::-webkit-scrollbar {
-            width: 5px;
-        }
-
-        .sidebar-nav::-webkit-scrollbar-track {
-            background: transparent;
-        }
-
-        .sidebar-nav::-webkit-scrollbar-thumb {
-            background: var(--border-hover);
-            border-radius: 3px;
+            height: fit-content;
+            position: sticky;
+            top: calc(var(--header-height) + 24px);
         }
 
         .sidebar-logo {
@@ -160,7 +142,6 @@
             padding: 8px 12px 24px;
             border-bottom: 1px solid var(--border-light);
             margin-bottom: 16px;
-            flex-shrink: 0;
         }
 
         .sidebar-logo i {
@@ -176,8 +157,7 @@
         }
 
         .nav-section {
-            margin-bottom: 16px;
-            flex-shrink: 0;
+            margin-bottom: 8px;
         }
 
         .nav-section-title {
@@ -190,7 +170,7 @@
         }
 
         .nav-item {
-            padding: 16px 20px;
+            padding: 14px 16px;
             border: none;
             background: transparent;
             color: var(--text-secondary);
@@ -293,7 +273,7 @@
 
         .panel-header-bar {
             padding: 16px 24px;
-            background: var(--primary-gradient);
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
             color: white;
         }
 
@@ -318,13 +298,10 @@
             display: flex;
             gap: 24px;
             margin-bottom: 24px;
-            min-height: 80vh;
-            max-height: calc(100vh - 100px);
         }
 
         .manage-header-row .panel {
             flex: 1;
-            min-height: 100%;
         }
 
         .create-form {
@@ -355,7 +332,7 @@
             align-items: center;
             justify-content: center;
             gap: 8px;
-            background: var(--primary-gradient);
+            background: var(--primary);
             color: white;
             border: none;
             padding: 12px 24px;
@@ -365,13 +342,13 @@
             font-weight: 600;
             transition: var(--transition);
             white-space: nowrap;
-            box-shadow: 0 2px 8px rgba(102, 126, 234, 0.3);
+            box-shadow: 0 2px 8px rgba(74, 144, 226, 0.25);
         }
 
         .btn:hover {
+            background: var(--primary-dark);
             transform: translateY(-2px);
-            box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
-            background: linear-gradient(135deg, var(--primary-light) 0%, var(--primary-dark) 100%);
+            box-shadow: var(--shadow-primary);
         }
 
         .btn:active {
@@ -398,13 +375,13 @@
         }
 
         .btn-success {
-            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
-            box-shadow: 0 2px 8px rgba(16, 185, 129, 0.3);
+            background: var(--success);
+            box-shadow: 0 2px 8px rgba(80, 200, 120, 0.25);
         }
 
         .btn-success:hover {
-            background: linear-gradient(135deg, #34d399 0%, #10b981 100%);
-            box-shadow: 0 6px 20px rgba(16, 185, 129, 0.4);
+            background: #3CB371;
+            box-shadow: 0 4px 12px rgba(80, 200, 120, 0.3);
         }
 
         .btn-danger {
@@ -439,31 +416,11 @@
             align-items: center;
             gap: 16px;
             border: 1px solid var(--border-light);
-            transition: var(--transition);
-            position: relative;
-            overflow: hidden;
-        }
-
-        .stat-card::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            height: 3px;
-            background: var(--primary-gradient);
-            opacity: 0;
-            transition: var(--transition);
         }
 
         .stat-card:hover {
             border-color: var(--primary-light);
             box-shadow: var(--shadow-md);
-            transform: translateY(-2px);
-        }
-
-        .stat-card:hover::before {
-            opacity: 1;
         }
 
         .stat-icon {
@@ -482,12 +439,12 @@
         }
 
         .stat-icon.green {
-            background: linear-gradient(135deg, rgba(16, 185, 129, 0.15), var(--bg-white));
+            background: linear-gradient(135deg, rgba(80, 200, 120, 0.15), var(--bg-white));
             color: var(--success);
         }
 
         .stat-icon.orange {
-            background: linear-gradient(135deg, rgba(245, 158, 11, 0.15), var(--bg-white));
+            background: linear-gradient(135deg, rgba(245, 166, 35, 0.15), var(--bg-white));
             color: var(--warning);
         }
 
@@ -509,8 +466,7 @@
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
             gap: 16px;
-            min-height: 60vh;
-            max-height: calc(100vh - 200px);
+            max-height: 450px;
             overflow-y: auto;
             padding-right: 8px;
         }
@@ -543,14 +499,14 @@
 
         .kb-card:hover {
             border-color: var(--primary-light);
-            box-shadow: var(--shadow-md), 0 0 0 1px var(--primary-lighter);
-            transform: translateY(-4px);
+            box-shadow: var(--shadow-md);
+            transform: translateY(-2px);
         }
 
         .kb-card.active {
             border-color: var(--primary);
             background: linear-gradient(135deg, var(--primary-lighter), var(--bg-white));
-            box-shadow: 0 0 0 2px rgba(102, 126, 234, 0.2);
+            box-shadow: 0 0 0 2px rgba(74, 144, 226, 0.1);
         }
 
         .kb-card.built {
@@ -868,7 +824,7 @@
             flex: 1;
             display: flex;
             flex-direction: column;
-            min-height: 800px;
+            min-height: 500px;
             border-radius: var(--radius-lg);
             overflow: hidden;
             background: var(--bg-white);
@@ -946,12 +902,12 @@
         }
 
         .message-avatar.user {
-            background: var(--primary-gradient);
+            background: var(--primary);
             color: white;
         }
 
         .message-avatar.ai {
-            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+            background: var(--success);
             color: white;
         }
 
@@ -966,17 +922,15 @@
         }
 
         .chat-message.user .message-content {
-            background: var(--primary-gradient);
+            background: var(--primary);
             color: white;
             border-bottom-right-radius: 6px;
-            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
         }
 
         .chat-message.ai .message-content {
             background: var(--bg-white);
             border: 1px solid var(--border-light);
             border-bottom-left-radius: 6px;
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
         }
 
         /* 聊天输入 */
@@ -1012,12 +966,13 @@
             font-size: 15px;
             outline: none;
             transition: var(--transition);
-            background: var(--bg-white);
+            background: var(--bg-light);
         }
 
         .input-container input:focus {
             border-color: var(--primary);
-            box-shadow: 0 0 0 4px rgba(102, 126, 234, 0.15), 0 2px 8px rgba(102, 126, 234, 0.1);
+            background: var(--bg-white);
+            box-shadow: 0 0 0 4px rgba(74, 144, 226, 0.1);
         }
 
         .input-container .input-actions {
@@ -1091,8 +1046,7 @@
 
         /* 历史记录 */
         .history-list {
-            min-height: 25vh;
-            max-height: 30vh;
+            max-height: 280px;
             overflow-y: auto;
         }
 
@@ -1102,8 +1056,6 @@
             grid-template-columns: 280px 1fr;
             gap: 24px;
             flex: 1;
-            min-height: 80vh;
-            max-height: calc(100vh - 100px);
         }
 
         /* 左侧面板 */
@@ -1111,7 +1063,6 @@
             display: flex;
             flex-direction: column;
             gap: 24px;
-            height: 100%;
         }
 
         /* 下拉栏面板 */
@@ -1159,8 +1110,7 @@
         }
 
         .dropdown-body {
-            min-height: 25vh;
-            max-height: 30vh;
+            max-height: 600px;
             overflow-y: auto;
             transition: max-height 0.3s ease, padding 0.3s ease;
             display: flex;
@@ -1168,7 +1118,6 @@
         }
 
         .dropdown-panel.collapsed .dropdown-body {
-            min-height: 0;
             max-height: 0;
             overflow: hidden;
         }
@@ -1177,14 +1126,12 @@
         .dropdown-panel:has(.chat-results) .dropdown-body {
             display: flex;
             flex-direction: column;
-            min-height: 80vh;
-            max-height: calc(100vh - 100px);
-            height: 100%;
+            min-height: 400px;
+            max-height: 70vh;
         }
 
         .dropdown-panel:has(.chat-results) .chat-results {
-            height: 100%;
-            max-height: 100%;
+            flex: 1;
             overflow-y: auto;
         }
 
@@ -1305,7 +1252,7 @@
     <!-- 顶部导航 -->
     <div class="top-nav">
         <h1><i class="fas fa-graduation-cap"></i> 智慧知识库</h1>
-        <span class="subtitle">智能问答系统</span>
+        <span class="subtitle">学校智能问答系统</span>
         <div class="header-actions">
             <button class="btn-help"><i class="fas fa-question-circle"></i> 帮助</button>
         </div>
@@ -1382,11 +1329,11 @@
                 <!-- 🔥 新的横向布局：创建知识库 + 我的知识库 -->
                 <div class="manage-header-row">
                     <!-- 创建知识库 -->
-                    <div class="panel" style="flex: 0 0 340px; width: 340px; height: 100%;">
+                    <div class="panel" style="flex: 0 0 auto; min-width: 320px;">
                         <div class="panel-header-bar">
                             <h2><i class="fas fa-plus-circle"></i> 创建知识库</h2>
                         </div>
-                        <div class="panel-body" style="min-height: 50vh;">
+                        <div class="panel-body">
                             <div class="create-form">
                                 <input type="text" id="newKbName" placeholder="输入知识库名称，例如：课程资料">
                                 <button class="btn" onclick="createKB()">

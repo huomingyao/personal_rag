@@ -1,8 +1,0 @@
-{
-  "permissions": {
-    "allow": [
-      "Bash(D:/miniconda3/envs/api/python.exe -m pip show transformers accelerate torch langchain-text-splitters)",
-      "Bash(D:/miniconda3/envs/api/python.exe -m pip install transformers==4.30.2 accelerate==0.20.3 langchain-text-splitters==0.0.1 --force-reinstall)"
-    ]
-  }
-}
