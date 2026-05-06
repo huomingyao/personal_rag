@@ -1,0 +1,802 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>本地知识库问答系统 | 智能检索助手</title>
+    <link rel="stylesheet" href="https://cdn.bootcdn.net/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary: #4066ff;
+            --primary-light: #6b84ff;
+            --primary-dark: #2949d8;
+            --success: #00b42a;
+            --error: #f53f3f;
+            --warning: #ff7d00;
+            --bg-light: #f7f8fa;
+            --bg-white: #ffffff;
+            --text-main: #1d2129;
+            --text-secondary: #4e5969;
+            --text-placeholder: #86909c;
+            --border-light: #e5e6eb;
+            --border-hover: #c9cdD4;
+            --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.08);
+            --shadow-md: 0 4px 16px rgba(0, 0, 0, 0.12);
+            --radius-sm: 6px;
+            --radius-md: 8px;
+            --radius-lg: 12px;
+            --transition: all 0.3s ease;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: "PingFang SC", "Microsoft YaHei", Arial, sans-serif;
+        }
+
+        body {
+            min-height: 100vh;
+            background-color: var(--bg-light);
+            color: var(--text-main);
+            line-height: 1.6;
+            padding: 20px 10px;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            background: var(--bg-white);
+            border-radius: var(--radius-lg);
+            box-shadow: var(--shadow-md);
+            padding: 30px 24px;
+            overflow: hidden;
+        }
+
+        /* 头部样式 */
+        .header {
+            text-align: center;
+            margin-bottom: 36px;
+            position: relative;
+        }
+
+        .header h1 {
+            font-size: 28px;
+            font-weight: 600;
+            color: var(--primary-dark);
+            margin-bottom: 8px;
+            position: relative;
+            display: inline-block;
+        }
+
+        .header h1::after {
+            content: "";
+            position: absolute;
+            bottom: -8px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 60px;
+            height: 3px;
+            background: linear-gradient(90deg, var(--primary-light), var(--primary));
+            border-radius: 3px;
+        }
+
+        .header p {
+            color: var(--text-secondary);
+            font-size: 15px;
+        }
+
+        /* 通用区块样式 */
+        .section {
+            margin-bottom: 32px;
+        }
+
+        .section-title {
+            display: flex;
+            align-items: center;
+            font-size: 18px;
+            font-weight: 600;
+            color: var(--text-main);
+            margin-bottom: 16px;
+            padding-left: 8px;
+            border-left: 4px solid var(--primary);
+        }
+
+        .section-title i {
+            margin-right: 8px;
+            color: var(--primary);
+        }
+
+        /* 按钮样式 */
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            background: var(--primary);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: var(--radius-sm);
+            cursor: pointer;
+            font-size: 15px;
+            font-weight: 500;
+            transition: var(--transition);
+            box-shadow: 0 2px 4px rgba(64, 102, 255, 0.2);
+        }
+
+        .btn:hover {
+            background: var(--primary-dark);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(64, 102, 255, 0.3);
+        }
+
+        .btn:active {
+            transform: translateY(0);
+        }
+
+        .btn i {
+            margin-right: 6px;
+        }
+
+        /* 构建知识库区域 */
+        .build-section {
+            padding-bottom: 24px;
+            border-bottom: 1px solid var(--border-light);
+        }
+
+        .status {
+            margin-top: 12px;
+            padding: 12px 16px;
+            border-radius: var(--radius-sm);
+            font-size: 14px;
+            line-height: 1.5;
+            display: none;
+        }
+
+        .status.show {
+            display: block;
+        }
+
+        .status.success {
+            background-color: rgba(0, 180, 42, 0.1);
+            color: var(--success);
+            border: 1px solid rgba(0, 180, 42, 0.2);
+        }
+
+        .status.error {
+            background-color: rgba(245, 63, 63, 0.1);
+            color: var(--error);
+            border: 1px solid rgba(245, 63, 63, 0.2);
+        }
+
+        .status.loading {
+            background-color: rgba(64, 102, 255, 0.1);
+            color: var(--primary);
+            border: 1px solid rgba(64, 102, 255, 0.2);
+        }
+
+        /* 新增：进度条样式 */
+        .progress-container {
+            margin-top: 12px;
+            height: 8px;
+            width: 100%;
+            background-color: var(--bg-light);
+            border-radius: 4px;
+            overflow: hidden;
+            display: none;
+        }
+
+        .progress-bar {
+            height: 100%;
+            background: linear-gradient(90deg, var(--primary-light), var(--primary));
+            width: 0%;
+            border-radius: 4px;
+            transition: width 0.3s ease;
+        }
+
+        /* 问答区域 */
+        .chat-section .input-group {
+            display: flex;
+            gap: 12px;
+            margin-bottom: 20px;
+        }
+
+        .chat-section input[type="text"] {
+            flex: 1;
+            padding: 12px 16px;
+            border: 1px solid var(--border-light);
+            border-radius: var(--radius-sm);
+            font-size: 15px;
+            color: var(--text-main);
+            transition: var(--transition);
+            outline: none;
+        }
+
+        .chat-section input[type="text"]::placeholder {
+            color: var(--text-placeholder);
+        }
+
+        .chat-section input[type="text"]:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(64, 102, 255, 0.1);
+        }
+
+        /* 结果区域 */
+        .result {
+            background: var(--bg-light);
+            border-radius: var(--radius-md);
+            padding: 20px;
+            display: none;
+            animation: fadeIn 0.5s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .result .question-row {
+            font-size: 16px;
+            margin-bottom: 16px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid var(--border-light);
+        }
+
+        .result .question-row strong {
+            color: var(--primary-dark);
+        }
+
+        .knowledge-box {
+            margin: 16px 0;
+            padding: 16px;
+            background: var(--bg-white);
+            border-radius: var(--radius-sm);
+            border-left: 3px solid var(--primary-light);
+            box-shadow: var(--shadow-sm);
+        }
+
+        .knowledge-box strong {
+            display: block;
+            margin-bottom: 8px;
+            color: var(--text-main);
+            font-size: 15px;
+        }
+
+        .knowledge-box .content {
+            color: var(--text-secondary);
+            font-size: 14px;
+            line-height: 1.7;
+        }
+
+        .final-answer {
+            margin-top: 16px;
+        }
+
+        .final-answer strong {
+            color: var(--primary-dark);
+            font-size: 16px;
+        }
+
+        .final-answer .content {
+            margin-top: 8px;
+            padding: 20px;
+            background: var(--bg-white);
+            border-radius: var(--radius-sm);
+            box-shadow: var(--shadow-sm);
+            font-size: 15px;
+            line-height: 1.8;
+            color: var(--text-main);
+            max-height: 600px;
+            overflow-y: auto;
+            /* 美化回答内容的样式 */
+            white-space: pre-wrap;
+        }
+
+        /* 美化Markdown样式 */
+        .final-answer .content strong {
+            color: var(--primary-dark);
+            font-weight: 600;
+        }
+        .final-answer .content ul, .final-answer .content ol {
+            margin: 8px 0 8px 20px;
+        }
+        .final-answer .content li {
+            margin: 4px 0;
+        }
+        .final-answer .content p {
+            margin: 8px 0;
+        }
+
+        /* 工具按钮（复制、清空） */
+        .tool-btn {
+            font-size: 14px;
+            padding: 6px 12px;
+            margin-left: 8px;
+            background: var(--bg-light);
+            color: var(--text-secondary);
+            border: 1px solid var(--border-light);
+        }
+
+        .tool-btn:hover {
+            background: var(--border-light);
+            color: var(--primary);
+        }
+
+        /* 加载动画 */
+        .loader {
+            display: inline-block;
+            width: 16px;
+            height: 16px;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            border-top-color: white;
+            animation: spin 1s ease-in-out infinite;
+            margin-right: 8px;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        /* 折叠面板样式 - 核心修改：添加滚动条 */
+        .collapsible-panel {
+            margin: 8px 0;
+            border: 1px solid var(--border-light);
+            border-radius: var(--radius-sm);
+            background: var(--bg-white);
+        }
+
+        .panel-header {
+            padding: 10px 16px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            transition: var(--transition);
+        }
+
+        .panel-header:hover {
+            background-color: var(--bg-light);
+        }
+
+        .panel-header .panel-title {
+            font-size: 14px;
+            color: var(--text-main);
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+        }
+
+        /* 新增：复选框样式 */
+        .panel-checkbox {
+            margin-right: 8px;
+            width: 16px;
+            height: 16px;
+            cursor: pointer;
+        }
+
+        .panel-header .toggle-icon {
+            font-size: 12px;
+            color: var(--text-secondary);
+            transition: transform 0.3s ease;
+        }
+
+        .panel-header.active .toggle-icon {
+            transform: rotate(180deg);
+        }
+
+        .panel-content {
+            padding: 0 16px;
+            max-height: 0;
+            overflow-y: hidden;
+            transition: max-height 0.3s ease, padding 0.3s ease;
+        }
+
+        .panel-content.show {
+            padding: 10px 16px;
+            max-height: 400px;
+            overflow-y: auto;
+        }
+
+        .panel-content .content-text {
+            font-size: 14px;
+            color: var(--text-secondary);
+            line-height: 1.7;
+            white-space: pre-wrap;
+        }
+
+        /* 自定义滚动条样式 */
+        .panel-content.show::-webkit-scrollbar {
+            width: 6px;
+        }
+        .panel-content.show::-webkit-scrollbar-track {
+            background: var(--bg-light);
+            border-radius: 3px;
+        }
+        .panel-content.show::-webkit-scrollbar-thumb {
+            background: var(--primary-light);
+            border-radius: 3px;
+        }
+        .panel-content.show::-webkit-scrollbar-thumb:hover {
+            background: var(--primary);
+        }
+        .final-answer .content::-webkit-scrollbar {
+            width: 6px;
+        }
+        .final-answer .content::-webkit-scrollbar-track {
+            background: var(--bg-light);
+            border-radius: 3px;
+        }
+        .final-answer .content::-webkit-scrollbar-thumb {
+            background: var(--primary-light);
+            border-radius: 3px;
+        }
+        .final-answer .content::-webkit-scrollbar-thumb:hover {
+            background: var(--primary);
+        }
+
+        /* 响应式适配 */
+        @media (max-width: 768px) {
+            .container {
+                padding: 20px 16px;
+            }
+
+            .header h1 {
+                font-size: 24px;
+            }
+
+            .chat-section .input-group {
+                flex-direction: column;
+                gap: 8px;
+            }
+
+            .btn {
+                width: 100%;
+            }
+
+            .section {
+                margin-bottom: 24px;
+            }
+
+            .result {
+                padding: 16px;
+            }
+            .panel-content.show {
+                max-height: 300px;
+            }
+            .final-answer .content {
+                max-height: 400px;
+                padding: 16px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- 头部 -->
+        <div class="header">
+            <h1>本地知识库问答系统</h1>
+            <p>智能检索 · 精准回答 · 纯本地模式</p>
+        </div>
+
+        <!-- 构建知识库区域（新增进度条） -->
+        <div class="section build-section">
+            <div class="section-title">
+                <i class="fas fa-database"></i> 构建/更新知识库
+            </div>
+            <button class="btn" onclick="buildKnowledgeBase()">
+                <i class="fas fa-hammer"></i> 开始构建
+            </button>
+            <div id="buildStatus" class="status"></div>
+            <!-- 新增：进度条容器 -->
+            <div id="progressContainer" class="progress-container">
+                <div id="progressBar" class="progress-bar"></div>
+            </div>
+        </div>
+
+        <!-- 问答区域 -->
+        <div class="section chat-section">
+            <div class="section-title">
+                <i class="fas fa-comments"></i> 知识库问答
+            </div>
+            <div class="input-group">
+                <input type="text" id="questionInput" placeholder="请输入您的问题，例如：知识库包含哪些内容？">
+                <button class="btn" onclick="sendQuestion()">
+                    <i class="fas fa-paper-plane"></i> 提交
+                </button>
+                <button class="btn tool-btn" onclick="clearInput()">
+                    <i class="fas fa-times"></i> 清空
+                </button>
+            </div>
+            
+            <div class="result" id="resultArea">
+                <div class="question-row">
+                    <strong>问题：</strong>
+                    <span id="showQuestion"></span>
+                </div>
+                
+                <div class="knowledge-box">
+                    <strong><i class="fas fa-file-alt"></i> 本地知识库检索结果：</strong>
+                    <div id="localKnowledge" class="content">🔍 正在检索本地知识库...</div>
+                    <div id="localKnowledgePanels" class="local-knowledge-panels" style="margin-top: 10px; display: none;"></div>
+                </div>
+                
+                <div class="final-answer">
+                    <strong><i class="fas fa-lightbulb"></i> 最终回答：</strong>
+                    <div id="finalAnswer" class="content">🤖 正在生成回答...</div>
+                    <button class="btn tool-btn" style="margin-top:10px;display:none;" id="copyBtn" onclick="copyAnswer()">
+                        <i class="fas fa-copy"></i> 复制回答
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // 构建知识库（新增进度条逻辑）
+        function buildKnowledgeBase() {
+            const statusDiv = document.getElementById('buildStatus');
+            const progressContainer = document.getElementById('progressContainer');
+            const progressBar = document.getElementById('progressBar');
+            
+            // 重置状态和进度条
+            statusDiv.className = 'status loading show';
+            statusDiv.innerHTML = '<i class="fas fa-spinner fa-spin"></i> 正在初始化...';
+            progressContainer.style.display = 'block';
+            progressBar.style.width = '0%';
+            
+            // 关闭之前的EventSource（防止多开连接）
+            if (window.buildEventSource) {
+                window.buildEventSource.close();
+            }
+            
+            // 建立SSE连接，监听进度推送
+            window.buildEventSource = new EventSource('/build_progress');
+            
+            // 接收进度消息
+            window.buildEventSource.onmessage = function(e) {
+                try {
+                    const data = JSON.parse(e.data);
+                    const { progress, message, success } = data;
+                    
+                    // 更新进度条宽度
+                    progressBar.style.width = `${progress}%`;
+                    
+                    // 更新状态文本
+                    statusDiv.innerHTML = `<i class="fas fa-spinner fa-spin"></i> ${message}`;
+                    
+                    // 进度完成（100%）
+                    if (progress === 100) {
+                        window.buildEventSource.close(); // 关闭SSE连接
+                        progressContainer.style.display = 'none'; // 隐藏进度条
+                        
+                        // 更新最终状态样式
+                        if (success === true) {
+                            statusDiv.className = 'status success show';
+                            statusDiv.innerHTML = `<i class="fas fa-check-circle"></i> ${message}`;
+                            // 3秒后自动隐藏成功提示
+                            setTimeout(() => {
+                                statusDiv.classList.remove('show');
+                            }, 3000);
+                        } else if (success === false) {
+                            statusDiv.className = 'status error show';
+                            statusDiv.innerHTML = `<i class="fas fa-exclamation-circle"></i> ${message}`;
+                        }
+                    }
+                } catch (err) {
+                    console.error('解析进度数据失败：', err);
+                }
+            };
+            
+            // 处理SSE连接错误
+            window.buildEventSource.onerror = function(err) {
+                console.error('SSE连接错误：', err);
+                window.buildEventSource.close();
+                progressContainer.style.display = 'none';
+                statusDiv.className = 'status error show';
+                statusDiv.innerHTML = '<i class="fas fa-exclamation-circle"></i> 构建过程出错，请检查日志';
+            };
+        }
+
+        // 简单的Markdown渲染（适配大模型输出的加粗、列表、换行）
+        function renderMarkdown(text) {
+            // 处理加粗：**内容** → <strong>内容</strong>
+            text = text.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
+            // 处理无序列表：• 内容 → <li>内容</li>
+            text = text.replace(/• (.*?)(\n|$)/g, '<li>$1</li>');
+            // 处理有序列表：1. 内容 → <li>内容</li>
+            text = text.replace(/\d+\. (.*?)(\n|$)/g, '<li>$1</li>');
+            // 包裹列表标签
+            text = text.replace(/(<li>.*<\/li>)/gs, '<ul>$1</ul>');
+            // 处理换行
+            text = text.replace(/\n/g, '<br>');
+            return text;
+        }
+
+        // 收集选中的知识块
+        function getSelectedKnowledge() {
+            const checkboxes = document.querySelectorAll('.panel-checkbox');
+            const selected = [];
+            checkboxes.forEach((checkbox, index) => {
+                if (checkbox.checked) {
+                    // 获取对应知识块的内容
+                    const contentEl = checkbox.closest('.collapsible-panel').querySelector('.content-text');
+                    if (contentEl) {
+                        selected.push({
+                            index: index,
+                            content: contentEl.textContent.trim(),
+                            source: checkbox.dataset.source || '未知文件'
+                        });
+                    }
+                }
+            });
+            return selected;
+        }
+
+        // 发送问题
+        function sendQuestion() {
+            const question = document.getElementById('questionInput').value.trim();
+            if (!question) {
+                alert('请输入有效问题！');
+                return;
+            }
+            
+            const resultArea = document.getElementById('resultArea');
+            const showQuestion = document.getElementById('showQuestion');
+            const localKnowledge = document.getElementById('localKnowledge');
+            const localPanelsEl = document.getElementById('localKnowledgePanels');
+            const finalAnswer = document.getElementById('finalAnswer');
+            const copyBtn = document.getElementById('copyBtn');
+            
+            resultArea.style.display = 'block';
+            showQuestion.textContent = question;
+            localKnowledge.innerHTML = '<i class="fas fa-spinner fa-spin"></i> 正在检索本地知识库...';
+            localPanelsEl.style.display = 'none';
+            finalAnswer.innerHTML = '<i class="fas fa-spinner fa-spin"></i> 正在生成回答...';
+            copyBtn.style.display = 'none';
+            
+            fetch('/chat', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ 
+                    question: question,
+                    selected_knowledge: [] 
+                })
+            })
+            .then(response => response.json())
+            .then(data => {
+                // 渲染美化后的回答区域（先占位）
+                finalAnswer.innerHTML = '<i class="fas fa-spinner fa-spin"></i> 请选择需要使用的知识块，点击"提交"重新生成回答';
+                copyBtn.style.display = 'none';
+
+                localKnowledge.style.display = 'none';
+                localPanelsEl.style.display = 'block';
+                localPanelsEl.innerHTML = '';
+
+                // 渲染知识块面板（带复选框）
+                if (Array.isArray(data.local_knowledge) && data.local_knowledge.length > 0) {
+                    data.local_knowledge.forEach((item, index) => {
+                        let panelTitle, panelContent, source;
+                        if (typeof item === 'object' && item !== null) {
+                            source = item.source || '未知文件';
+                            panelTitle = `片段 ${index + 1}（来源：${source}）`;
+                            panelContent = item.content || '无内容';
+                        } else {
+                            source = '提示信息';
+                            panelTitle = '提示信息';
+                            panelContent = item || '无内容';
+                        }
+
+                        const panelDiv = document.createElement('div');
+                        panelDiv.className = 'collapsible-panel';
+
+                        const headerDiv = document.createElement('div');
+                        headerDiv.className = 'panel-header';
+                        // 新增：复选框（默认勾选）
+                        headerDiv.innerHTML = `
+                            <span class="panel-title">
+                                <input type="checkbox" class="panel-checkbox" checked data-source="${source}" id="kb_${index}">
+                                ${panelTitle}
+                            </span>
+                            <i class="fas fa-chevron-down toggle-icon"></i>
+                        `;
+
+                        const contentDiv = document.createElement('div');
+                        contentDiv.className = 'panel-content';
+                        contentDiv.innerHTML = `<div class="content-text">${panelContent}</div>`;
+
+                        // 折叠/展开逻辑
+                        headerDiv.addEventListener('click', (e) => {
+                            // 点击复选框时不触发折叠
+                            if (e.target.type !== 'checkbox') {
+                                headerDiv.classList.toggle('active');
+                                contentDiv.classList.toggle('show');
+                            }
+                        });
+
+                        panelDiv.appendChild(headerDiv);
+                        panelDiv.appendChild(contentDiv);
+                        localPanelsEl.appendChild(panelDiv);
+                    });
+
+                    // 添加"重新生成回答"按钮
+                    const regenerateBtn = document.createElement('button');
+                    regenerateBtn.className = 'btn';
+                    regenerateBtn.style = 'margin-top: 10px;';
+                    regenerateBtn.innerHTML = '<i class="fas fa-refresh"></i> 使用选中的知识块生成回答';
+                    regenerateBtn.onclick = () => {
+                        // 收集选中的知识块
+                        const selectedKnowledge = getSelectedKnowledge();
+                        if (selectedKnowledge.length === 0) {
+                            alert('请至少选择一个知识块！');
+                            return;
+                        }
+
+                        // 重新请求后端生成回答
+                        finalAnswer.innerHTML = '<i class="fas fa-spinner fa-spin"></i> 正在生成回答...';
+                        fetch('/chat', {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json',
+                            },
+                            body: JSON.stringify({ 
+                                question: question,
+                                selected_knowledge: selectedKnowledge 
+                            })
+                        })
+                        .then(res => res.json())
+                        .then(resData => {
+                            finalAnswer.innerHTML = renderMarkdown(resData.final_answer || '❌ 生成回答失败');
+                            copyBtn.style.display = 'inline-block';
+                        })
+                        .catch(err => {
+                            finalAnswer.innerHTML = '<i class="fas fa-exclamation-circle"></i> 请求失败：' + err;
+                        });
+                    };
+                    localPanelsEl.appendChild(regenerateBtn);
+                } else {
+                    localPanelsEl.innerHTML = '<div class="content-text">📖 本地无相关内容</div>';
+                    finalAnswer.innerHTML = renderMarkdown(data.final_answer || '❌ 生成回答失败');
+                    copyBtn.style.display = 'inline-block';
+                }
+            })
+            .catch(error => {
+                finalAnswer.innerHTML = '<i class="fas fa-exclamation-circle"></i> 请求失败：' + error;
+            });
+        }
+
+        // 清空输入框
+        function clearInput() {
+            document.getElementById('questionInput').value = '';
+        }
+
+        // 复制最终回答
+        function copyAnswer() {
+            // 获取原始文本（去除HTML标签）
+            const finalAnswerEl = document.getElementById('finalAnswer');
+            const text = finalAnswerEl.textContent || finalAnswerEl.innerText;
+            
+            navigator.clipboard.writeText(text)
+                .then(() => {
+                    const copyBtn = document.getElementById('copyBtn');
+                    copyBtn.innerHTML = '<i class="fas fa-check"></i> 复制成功';
+                    setTimeout(() => {
+                        copyBtn.innerHTML = '<i class="fas fa-copy"></i> 复制回答';
+                    }, 2000);
+                })
+                .catch(err => {
+                    alert('复制失败：' + err);
+                });
+        }
+
+        // 按回车提交问题
+        document.getElementById('questionInput').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                sendQuestion();
+            }
+        });
+    </script>
+</body>
+</html>

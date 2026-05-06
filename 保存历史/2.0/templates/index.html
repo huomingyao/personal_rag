@@ -1,0 +1,1471 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>多知识库问答系统 | 智能检索助手</title>
+    <link rel="stylesheet" href="https://cdn.bootcdn.net/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary: #4066ff;
+            --primary-light: #6b84ff;
+            --primary-dark: #2949d8;
+            --success: #00b42a;
+            --error: #f53f3f;
+            --warning: #ff7d00;
+            --bg-light: #f7f8fa;
+            --bg-white: #ffffff;
+            --text-main: #1d2129;
+            --text-secondary: #4e5969;
+            --text-placeholder: #86909c;
+            --border-light: #e5e6eb;
+            --border-hover: #c9cdd4;
+            --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.08);
+            --shadow-md: 0 4px 16px rgba(0, 0, 0, 0.12);
+            --radius-sm: 6px;
+            --radius-md: 8px;
+            --radius-lg: 12px;
+            --transition: all 0.3s ease;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: "PingFang SC", "Microsoft YaHei", Arial, sans-serif;
+        }
+
+        body {
+            min-height: 100vh;
+            background-color: var(--bg-light);
+            color: var(--text-main);
+            line-height: 1.6;
+            padding: 20px 10px;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        /* 头部样式 */
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+            padding: 20px;
+            background: var(--bg-white);
+            border-radius: var(--radius-lg);
+            box-shadow: var(--shadow-sm);
+        }
+
+        .header h1 {
+            font-size: 28px;
+            font-weight: 600;
+            color: var(--primary-dark);
+            margin-bottom: 8px;
+        }
+
+        .header p {
+            color: var(--text-secondary);
+            font-size: 14px;
+        }
+
+        /* 主布局 */
+        .main-layout {
+            display: grid;
+            grid-template-columns: 380px 1fr;
+            gap: 20px;
+        }
+
+        @media (max-width: 1024px) {
+            .main-layout {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* 左侧边栏 */
+        .sidebar {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+
+        .panel {
+            background: var(--bg-white);
+            border-radius: var(--radius-lg);
+            box-shadow: var(--shadow-sm);
+            overflow: hidden;
+        }
+
+        .panel-header-bar {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 16px 20px;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+            color: white;
+        }
+
+        .panel-header-bar h2 {
+            font-size: 16px;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .panel-body {
+            padding: 20px;
+        }
+
+        /* 创建知识库表单 */
+        .create-form {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 0;
+        }
+
+        .create-form input {
+            flex: 1;
+            padding: 10px 14px;
+            border: 1px solid var(--border-light);
+            border-radius: var(--radius-sm);
+            font-size: 14px;
+            outline: none;
+            transition: var(--transition);
+        }
+
+        .create-form input:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(64, 102, 255, 0.1);
+        }
+
+        /* 按钮样式 */
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+            background: var(--primary);
+            color: white;
+            border: none;
+            padding: 10px 16px;
+            border-radius: var(--radius-sm);
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 500;
+            transition: var(--transition);
+            white-space: nowrap;
+        }
+
+        .btn:hover {
+            background: var(--primary-dark);
+            transform: translateY(-1px);
+        }
+
+        .btn:active {
+            transform: translateY(0);
+        }
+
+        .btn-sm {
+            padding: 6px 12px;
+            font-size: 12px;
+        }
+
+        .btn-secondary {
+            background: var(--bg-light);
+            color: var(--text-secondary);
+            border: 1px solid var(--border-light);
+        }
+
+        .btn-secondary:hover {
+            background: var(--border-light);
+            color: var(--primary);
+        }
+
+        .btn-success {
+            background: var(--success);
+        }
+
+        .btn-danger {
+            background: var(--error);
+        }
+
+        .btn-danger:hover {
+            background: #d9363e;
+        }
+
+        .btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        /* 知识库卡片 */
+        .kb-list {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            max-height: 500px;
+            overflow-y: auto;
+        }
+
+        .kb-card {
+            border: 2px solid var(--border-light);
+            border-radius: var(--radius-md);
+            padding: 16px;
+            cursor: pointer;
+            transition: var(--transition);
+            position: relative;
+        }
+
+        .kb-card:hover {
+            border-color: var(--primary-light);
+            box-shadow: var(--shadow-sm);
+        }
+
+        .kb-card.active {
+            border-color: var(--primary);
+            background: rgba(64, 102, 255, 0.03);
+        }
+
+        .kb-card.built {
+            border-left: 4px solid var(--success);
+        }
+
+        .kb-card.unbuilt {
+            border-left: 4px solid var(--warning);
+        }
+
+        .kb-card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 8px;
+        }
+
+        .kb-name {
+            font-weight: 600;
+            font-size: 15px;
+            color: var(--text-main);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .kb-status-tag {
+            padding: 2px 8px;
+            border-radius: 12px;
+            font-size: 11px;
+            font-weight: 500;
+        }
+
+        .kb-status-tag.built {
+            background: rgba(0, 180, 42, 0.1);
+            color: var(--success);
+        }
+
+        .kb-status-tag.unbuilt {
+            background: rgba(255, 125, 0, 0.1);
+            color: var(--warning);
+        }
+
+        .kb-meta {
+            font-size: 13px;
+            color: var(--text-secondary);
+            margin-bottom: 12px;
+        }
+
+        .kb-actions {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+
+        .kb-actions .btn {
+            flex: 1;
+            min-width: 60px;
+        }
+
+        /* 文件列表 */
+        .file-list {
+            margin-top: 12px;
+            padding-top: 12px;
+            border-top: 1px solid var(--border-light);
+            display: none;
+        }
+
+        .file-list.show {
+            display: block;
+            animation: fadeIn 0.3s ease;
+        }
+
+        .file-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 6px 8px;
+            font-size: 12px;
+            color: var(--text-secondary);
+            border-radius: var(--radius-sm);
+        }
+
+        .file-item:hover {
+            background: var(--bg-light);
+        }
+
+        .file-item i {
+            color: var(--primary);
+        }
+
+        .file-empty {
+            text-align: center;
+            padding: 20px;
+            color: var(--text-placeholder);
+            font-size: 13px;
+        }
+
+        /* 上传区域 */
+        .upload-area {
+            border: 2px dashed var(--border-light);
+            border-radius: var(--radius-md);
+            padding: 30px 20px;
+            text-align: center;
+            cursor: pointer;
+            transition: var(--transition);
+            margin-top: 16px;
+        }
+
+        .upload-area:hover {
+            border-color: var(--primary);
+            background: rgba(64, 102, 255, 0.03);
+        }
+
+        .upload-area.dragover {
+            border-color: var(--primary);
+            background: rgba(64, 102, 255, 0.08);
+        }
+
+        .upload-area i {
+            font-size: 32px;
+            color: var(--primary-light);
+            margin-bottom: 8px;
+        }
+
+        .upload-area p {
+            color: var(--text-secondary);
+            font-size: 14px;
+        }
+
+        .upload-area .hint {
+            color: var(--text-placeholder);
+            font-size: 12px;
+            margin-top: 4px;
+        }
+
+        /* 进度条 */
+        .progress-wrapper {
+            margin-top: 16px;
+            padding: 16px;
+            background: var(--bg-light);
+            border-radius: var(--radius-sm);
+            display: none;
+        }
+
+        .progress-wrapper.show {
+            display: block;
+            animation: fadeIn 0.3s ease;
+        }
+
+        .progress-info {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 8px;
+            font-size: 13px;
+        }
+
+        .progress-message {
+            color: var(--text-secondary);
+        }
+
+        .progress-percent {
+            color: var(--primary);
+            font-weight: 600;
+        }
+
+        .progress-bar-bg {
+            height: 6px;
+            background: var(--border-light);
+            border-radius: 3px;
+            overflow: hidden;
+        }
+
+        .progress-bar-fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--primary-light), var(--primary));
+            border-radius: 3px;
+            transition: width 0.3s ease;
+            width: 0%;
+        }
+
+        /* 主内容区 */
+        .main-content {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+
+        /* 知识库选择器 - 标签样式 */
+        .kb-selector-panel {
+            padding: 20px;
+        }
+
+        .kb-selector-title {
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--text-main);
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .kb-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .kb-tag-item {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 8px 14px;
+            background: var(--bg-light);
+            border: 2px solid transparent;
+            border-radius: 20px;
+            cursor: pointer;
+            transition: var(--transition);
+            font-size: 14px;
+            color: var(--text-secondary);
+        }
+
+        .kb-tag-item:hover {
+            background: rgba(64, 102, 255, 0.1);
+            color: var(--primary);
+        }
+
+        .kb-tag-item.selected {
+            background: rgba(64, 102, 255, 0.15);
+            border-color: var(--primary);
+            color: var(--primary-dark);
+            font-weight: 500;
+        }
+
+        .kb-tag-item.disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .kb-tag-item .check-icon {
+            display: none;
+        }
+
+        .kb-tag-item.selected .check-icon {
+            display: inline;
+        }
+
+        .kb-tag-item.selected .unchecked-icon {
+            display: none;
+        }
+
+        /* 问答区域 */
+        .chat-panel {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            min-height: 500px;
+        }
+
+        .chat-input-area {
+            padding: 20px;
+            border-bottom: 1px solid var(--border-light);
+        }
+
+        .input-wrapper {
+            display: flex;
+            gap: 12px;
+        }
+
+        .input-wrapper input {
+            flex: 1;
+            padding: 12px 16px;
+            border: 1px solid var(--border-light);
+            border-radius: var(--radius-sm);
+            font-size: 15px;
+            outline: none;
+            transition: var(--transition);
+        }
+
+        .input-wrapper input:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(64, 102, 255, 0.1);
+        }
+
+        .chat-results {
+            flex: 1;
+            padding: 20px;
+            overflow-y: auto;
+        }
+
+        /* 结果展示 */
+        .result-section {
+            margin-bottom: 24px;
+        }
+
+        .result-section-title {
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--text-main);
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .question-display {
+            padding: 12px 16px;
+            background: var(--bg-light);
+            border-radius: var(--radius-sm);
+            font-size: 15px;
+            color: var(--text-main);
+            border-left: 3px solid var(--primary);
+        }
+
+        /* 知识块面板 */
+        .knowledge-panels {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .knowledge-item {
+            border: 1px solid var(--border-light);
+            border-radius: var(--radius-sm);
+            overflow: hidden;
+        }
+
+        .knowledge-header {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 12px 16px;
+            background: var(--bg-light);
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .knowledge-header:hover {
+            background: var(--border-light);
+        }
+
+        .knowledge-header input[type="checkbox"] {
+            width: 18px;
+            height: 18px;
+            cursor: pointer;
+            accent-color: var(--primary);
+        }
+
+        .knowledge-source {
+            flex: 1;
+            font-size: 13px;
+            font-weight: 500;
+            color: var(--text-main);
+        }
+
+        .knowledge-toggle {
+            color: var(--text-secondary);
+            transition: transform 0.3s ease;
+        }
+
+        .knowledge-item.expanded .knowledge-toggle {
+            transform: rotate(180deg);
+        }
+
+        .knowledge-content {
+            padding: 0 16px;
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.3s ease, padding 0.3s ease;
+        }
+
+        .knowledge-item.expanded .knowledge-content {
+            padding: 16px;
+            max-height: 300px;
+            overflow-y: auto;
+        }
+
+        .knowledge-text {
+            font-size: 14px;
+            color: var(--text-secondary);
+            line-height: 1.7;
+            white-space: pre-wrap;
+        }
+
+        /* 最终回答 */
+        .answer-box {
+            background: linear-gradient(135deg, rgba(64, 102, 255, 0.05) 0%, rgba(64, 102, 255, 0.02) 100%);
+            border: 1px solid rgba(64, 102, 255, 0.2);
+            border-radius: var(--radius-md);
+            padding: 20px;
+        }
+
+        .answer-content {
+            font-size: 15px;
+            line-height: 1.8;
+            color: var(--text-main);
+            white-space: pre-wrap;
+        }
+
+        .answer-content strong {
+            color: var(--primary-dark);
+        }
+
+        .answer-content ul, .answer-content ol {
+            margin: 8px 0 8px 20px;
+        }
+
+        .answer-content li {
+            margin: 4px 0;
+        }
+
+        /* 工具栏 */
+        .toolbar {
+            display: flex;
+            gap: 10px;
+            margin-top: 16px;
+            padding-top: 16px;
+            border-top: 1px solid rgba(64, 102, 255, 0.1);
+        }
+
+        /* 加载动画 */
+        .loading-spinner {
+            display: inline-block;
+            width: 16px;
+            height: 16px;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            border-top-color: white;
+            animation: spin 0.8s linear infinite;
+        }
+
+        .loading-spinner.dark {
+            border-color: var(--border-light);
+            border-top-color: var(--primary);
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* 提示信息 */
+        .alert {
+            padding: 12px 16px;
+            border-radius: var(--radius-sm);
+            font-size: 14px;
+            margin-bottom: 16px;
+            display: none;
+        }
+
+        .alert.show {
+            display: block;
+            animation: fadeIn 0.3s ease;
+        }
+
+        .alert-success {
+            background: rgba(0, 180, 42, 0.1);
+            color: var(--success);
+            border: 1px solid rgba(0, 180, 42, 0.2);
+        }
+
+        .alert-error {
+            background: rgba(245, 63, 63, 0.1);
+            color: var(--error);
+            border: 1px solid rgba(245, 63, 63, 0.2);
+        }
+
+        .alert-info {
+            background: rgba(64, 102, 255, 0.1);
+            color: var(--primary);
+            border: 1px solid rgba(64, 102, 255, 0.2);
+        }
+
+        /* 空状态 */
+        .empty-state {
+            text-align: center;
+            padding: 60px 20px;
+            color: var(--text-placeholder);
+        }
+
+        .empty-state i {
+            font-size: 48px;
+            margin-bottom: 16px;
+            opacity: 0.5;
+        }
+
+        .empty-state p {
+            font-size: 14px;
+        }
+
+        /* 响应式 */
+        @media (max-width: 768px) {
+            .kb-actions .btn {
+                flex: none;
+                padding: 6px 10px;
+            }
+
+            .kb-actions .btn span {
+                display: none;
+            }
+
+            .input-wrapper {
+                flex-direction: column;
+            }
+
+            .kb-tag-item {
+                font-size: 13px;
+                padding: 6px 12px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- 头部 -->
+        <div class="header">
+            <h1><i class="fas fa-brain"></i> 多知识库问答系统</h1>
+            <p>创建多个知识库，智能选择检索，精准回答问题</p>
+        </div>
+
+        <!-- 主布局 -->
+        <div class="main-layout">
+            <!-- 左侧边栏 -->
+            <div class="sidebar">
+                <!-- 创建知识库 -->
+                <div class="panel">
+                    <div class="panel-header-bar">
+                        <h2><i class="fas fa-plus-circle"></i> 创建知识库</h2>
+                    </div>
+                    <div class="panel-body">
+                        <div class="create-form">
+                            <input type="text" id="newKbName" placeholder="输入知识库名称，如：产品手册">
+                            <button class="btn" onclick="createKB()">
+                                <i class="fas fa-plus"></i> 创建
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 知识库列表 -->
+                <div class="panel">
+                    <div class="panel-header-bar">
+                        <h2><i class="fas fa-database"></i> 我的知识库</h2>
+                        <span id="kbCount" style="font-size: 12px; opacity: 0.9;">0 个</span>
+                    </div>
+                    <div class="panel-body">
+                        <div id="kbList" class="kb-list">
+                            <div class="empty-state">
+                                <i class="fas fa-folder-open"></i>
+                                <p>暂无知识库，请先创建</p>
+                            </div>
+                        </div>
+
+                        <!-- 上传区域 -->
+                        <div class="upload-area" id="uploadArea" onclick="document.getElementById('fileInput').click()">
+                            <input type="file" id="fileInput" multiple accept=".txt,.pdf,.docx,.doc,.md,.json" style="display: none;" onchange="handleFileUpload()">
+                            <i class="fas fa-cloud-upload-alt"></i>
+                            <p>点击或拖拽文件到此处上传</p>
+                            <p class="hint">支持 TXT、PDF、Word、Markdown、JSON</p>
+                        </div>
+
+                        <!-- 进度显示 -->
+                        <div id="progressWrapper" class="progress-wrapper">
+                            <div class="progress-info">
+                                <span class="progress-message" id="progressMessage">准备中...</span>
+                                <span class="progress-percent" id="progressPercent">0%</span>
+                            </div>
+                            <div class="progress-bar-bg">
+                                <div class="progress-bar-fill" id="progressBar"></div>
+                            </div>
+                        </div>
+
+                        <!-- 提示信息 -->
+                        <div id="alertBox" class="alert"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 主内容区 -->
+            <div class="main-content">
+                <!-- 知识库选择 -->
+                <div class="panel kb-selector-panel">
+                    <div class="kb-selector-title">
+                        <i class="fas fa-filter"></i> 选择要检索的知识库
+                    </div>
+                    <div id="kbTags" class="kb-tags">
+                        <span style="color: var(--text-placeholder); font-size: 14px;">暂无可用的知识库</span>
+                    </div>
+                </div>
+
+                <!-- 问答面板 -->
+                <div class="panel chat-panel">
+                    <div class="chat-input-area">
+                        <div class="input-wrapper">
+                            <input type="text" id="questionInput" placeholder="输入您的问题，例如：产品的核心功能有哪些？" onkeypress="handleEnter(event)">
+                            <button class="btn" id="submitBtn" onclick="askQuestion()">
+                                <i class="fas fa-paper-plane"></i> 提问
+                            </button>
+                            <button class="btn btn-secondary" onclick="clearQuestion()">
+                                <i class="fas fa-times"></i> 清空
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="chat-results" id="chatResults">
+                        <div class="empty-state">
+                            <i class="fas fa-comments"></i>
+                            <p>选择知识库并输入问题开始对话</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // 全局状态
+        let currentKB = null;  // 当前选中的上传目标知识库
+        let kbData = [];       // 知识库数据
+        let selectedKBs = new Set();  // 选中的知识库（用于检索）
+        let currentQuestion = '';  // 当前问题
+        let buildEventSource = null;  // SSE连接
+
+        // 初始化
+        window.onload = function() {
+            loadKBList();
+            setupDragDrop();
+        };
+
+        // 加载知识库列表
+        async function loadKBList() {
+            try {
+                const response = await fetch('/api/kb/list');
+                const data = await response.json();
+
+                if (data.success) {
+                    kbData = data.data;
+                    renderKBList();
+                    renderKBTags();
+                    document.getElementById('kbCount').textContent = `${kbData.length} 个`;
+                }
+            } catch (error) {
+                showAlert('加载知识库列表失败', 'error');
+                console.error('加载知识库失败:', error);
+            }
+        }
+
+        // 渲染知识库卡片列表
+        function renderKBList() {
+            const container = document.getElementById('kbList');
+
+            if (kbData.length === 0) {
+                container.innerHTML = `
+                    <div class="empty-state">
+                        <i class="fas fa-folder-open"></i>
+                        <p>暂无知识库，请先创建</p>
+                    </div>
+                `;
+                return;
+            }
+
+            container.innerHTML = kbData.map(kb => `
+                <div class="kb-card ${kb.is_built ? 'built' : 'unbuilt'} ${currentKB === kb.name ? 'active' : ''}" data-name="${kb.name}" onclick="selectKB('${kb.name}')">
+                    <div class="kb-card-header">
+                        <div class="kb-name">
+                            <i class="fas fa-database"></i>
+                            ${kb.name}
+                        </div>
+                        <span class="kb-status-tag ${kb.is_built ? 'built' : 'unbuilt'}">
+                            ${kb.is_built ? '已构建' : '未构建'}
+                        </span>
+                    </div>
+                    <div class="kb-meta">
+                        <i class="fas fa-file-alt"></i> ${kb.file_count} 个文件
+                    </div>
+                    <div class="kb-actions">
+                        <button class="btn btn-sm btn-secondary" onclick="event.stopPropagation(); loadKBFiles('${kb.name}')">
+                            <i class="fas fa-list"></i> <span>文件</span>
+                        </button>
+                        <button class="btn btn-sm ${kb.is_built ? 'btn-success' : ''}" onclick="event.stopPropagation(); buildKB('${kb.name}')">
+                            <i class="fas fa-hammer"></i> <span>${kb.is_built ? '重建' : '构建'}</span>
+                        </button>
+                        <button class="btn btn-sm btn-danger" onclick="event.stopPropagation(); deleteKB('${kb.name}')">
+                            <i class="fas fa-trash"></i> <span>删除</span>
+                        </button>
+                    </div>
+                    <div class="file-list" id="fileList_${kb.name}"></div>
+                </div>
+            `).join('');
+        }
+
+        // 渲染知识库标签（问答区选择器）
+        function renderKBTags() {
+            const container = document.getElementById('kbTags');
+            const builtKBs = kbData.filter(kb => kb.is_built);
+
+            if (builtKBs.length === 0) {
+                container.innerHTML = '<span style="color: var(--text-placeholder); font-size: 14px;">请先创建知识库并构建向量库</span>';
+                return;
+            }
+
+            container.innerHTML = kbData.map(kb => {
+                const isSelected = selectedKBs.has(kb.name);
+                const isDisabled = !kb.is_built;
+
+                return `
+                    <div class="kb-tag-item ${isSelected ? 'selected' : ''} ${isDisabled ? 'disabled' : ''}"
+                         onclick="${isDisabled ? '' : `toggleKBTag('${kb.name}')`}">
+                        <i class="far fa-circle unchecked-icon"></i>
+                        <i class="fas fa-check-circle check-icon"></i>
+                        <span>${kb.name}</span>
+                        ${isDisabled ? '<small>(未构建)</small>' : ''}
+                    </div>
+                `;
+            }).join('');
+        }
+
+        // 切换知识库标签选择
+        function toggleKBTag(kbName) {
+            if (selectedKBs.has(kbName)) {
+                selectedKBs.delete(kbName);
+            } else {
+                selectedKBs.add(kbName);
+            }
+            renderKBTags();
+        }
+
+        // 选择知识库（用于上传）
+        function selectKB(kbName) {
+            currentKB = kbName;
+            renderKBList();  // 重新渲染以显示选中状态
+            showAlert(`已选择「${kbName}」，点击上传区域添加文件`, 'info');
+        }
+
+        // 创建知识库
+        async function createKB() {
+            const nameInput = document.getElementById('newKbName');
+            const name = nameInput.value.trim();
+
+            if (!name) {
+                showAlert('请输入知识库名称', 'error');
+                return;
+            }
+
+            try {
+                const response = await fetch('/api/kb/create', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ name })
+                });
+
+                const data = await response.json();
+
+                if (data.success) {
+                    showAlert(data.message, 'success');
+                    nameInput.value = '';
+                    loadKBList();
+                } else {
+                    showAlert(data.message, 'error');
+                }
+            } catch (error) {
+                showAlert('创建失败: ' + error, 'error');
+            }
+        }
+
+        // 删除知识库
+        async function deleteKB(kbName) {
+            if (!confirm(`确定要删除「${kbName}」知识库吗？此操作不可恢复！`)) {
+                return;
+            }
+
+            try {
+                const response = await fetch('/api/kb/delete', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ name: kbName })
+                });
+
+                const data = await response.json();
+
+                if (data.success) {
+                    showAlert(data.message, 'success');
+                    if (currentKB === kbName) currentKB = null;
+                    selectedKBs.delete(kbName);
+                    loadKBList();
+                } else {
+                    showAlert(data.message, 'error');
+                }
+            } catch (error) {
+                showAlert('删除失败: ' + error, 'error');
+            }
+        }
+
+        // 加载知识库文件列表
+        async function loadKBFiles(kbName) {
+            const fileListEl = document.getElementById(`fileList_${kbName}`);
+
+            // 如果已经显示，则隐藏
+            if (fileListEl.classList.contains('show')) {
+                fileListEl.classList.remove('show');
+                return;
+            }
+
+            try {
+                const response = await fetch(`/api/kb/files?name=${encodeURIComponent(kbName)}`);
+                const data = await response.json();
+
+                if (data.success) {
+                    if (data.data.length === 0) {
+                        fileListEl.innerHTML = '<div class="file-empty">暂无文件</div>';
+                    } else {
+                        fileListEl.innerHTML = data.data.map(file => `
+                            <div class="file-item">
+                                <i class="fas fa-file"></i>
+                                <span>${file.name}</span>
+                                <span style="margin-left: auto; color: var(--text-placeholder);">
+                                    ${formatFileSize(file.size)}
+                                </span>
+                            </div>
+                        `).join('');
+                    }
+                    fileListEl.classList.add('show');
+                }
+            } catch (error) {
+                console.error('加载文件列表失败:', error);
+            }
+        }
+
+        // 格式化文件大小
+        function formatFileSize(bytes) {
+            if (bytes < 1024) return bytes + ' B';
+            if (bytes < 1024 * 1024) return (bytes / 1024).toFixed(1) + ' KB';
+            return (bytes / (1024 * 1024)).toFixed(1) + ' MB';
+        }
+
+        // 设置拖拽上传
+        function setupDragDrop() {
+            const uploadArea = document.getElementById('uploadArea');
+
+            uploadArea.addEventListener('dragover', (e) => {
+                e.preventDefault();
+                uploadArea.classList.add('dragover');
+            });
+
+            uploadArea.addEventListener('dragleave', () => {
+                uploadArea.classList.remove('dragover');
+            });
+
+            uploadArea.addEventListener('drop', (e) => {
+                e.preventDefault();
+                uploadArea.classList.remove('dragover');
+
+                if (!currentKB) {
+                    showAlert('请先选择一个知识库', 'error');
+                    return;
+                }
+
+                const files = e.dataTransfer.files;
+                if (files.length > 0) {
+                    uploadFiles(files);
+                }
+            });
+        }
+
+        // 处理文件上传
+        function handleFileUpload() {
+            const fileInput = document.getElementById('fileInput');
+            const files = fileInput.files;
+
+            if (!currentKB) {
+                showAlert('请先选择一个知识库', 'error');
+                fileInput.value = '';
+                return;
+            }
+
+            if (files.length > 0) {
+                uploadFiles(files);
+            }
+        }
+
+        // 上传文件
+        async function uploadFiles(files) {
+            if (!currentKB) {
+                showAlert('请先选择一个知识库', 'error');
+                return;
+            }
+
+            showAlert(`正在上传 ${files.length} 个文件...`, 'info');
+
+            let successCount = 0;
+            let failCount = 0;
+            let autoBuildKB = null;
+
+            for (const file of Array.from(files)) {
+                const formData = new FormData();
+                formData.append('kb_name', currentKB);
+                formData.append('file', file);
+
+                try {
+                    const response = await fetch('/api/kb/upload', {
+                        method: 'POST',
+                        body: formData
+                    });
+
+                    const data = await response.json();
+
+                    if (data.success) {
+                        successCount++;
+                        if (data.auto_build) {
+                            autoBuildKB = data.kb_name;
+                        }
+                    } else {
+                        failCount++;
+                        console.error(`上传 ${file.name} 失败:`, data.message);
+                    }
+                } catch (error) {
+                    failCount++;
+                    console.error(`上传 ${file.name} 失败:`, error);
+                }
+            }
+
+            // 清空文件输入
+            document.getElementById('fileInput').value = '';
+
+            // 显示上传结果
+            if (failCount === 0) {
+                showAlert(`成功上传 ${successCount} 个文件`, 'success');
+            } else {
+                showAlert(`成功 ${successCount} 个，失败 ${failCount} 个`, 'error');
+            }
+
+            // 刷新列表
+            await loadKBList();
+
+            // 自动触发构建
+            if (autoBuildKB) {
+                setTimeout(() => buildKB(autoBuildKB), 500);
+            }
+        }
+
+        // 构建知识库
+        function buildKB(kbName) {
+            const progressWrapper = document.getElementById('progressWrapper');
+            const progressBar = document.getElementById('progressBar');
+            const progressMessage = document.getElementById('progressMessage');
+            const progressPercent = document.getElementById('progressPercent');
+
+            progressWrapper.classList.add('show');
+            progressBar.style.width = '0%';
+            progressMessage.textContent = '正在初始化...';
+            progressPercent.textContent = '0%';
+
+            // 关闭之前的连接
+            if (buildEventSource) {
+                buildEventSource.close();
+            }
+
+            // 建立SSE连接
+            buildEventSource = new EventSource(`/build_progress/${encodeURIComponent(kbName)}`);
+
+            buildEventSource.onmessage = function(e) {
+                try {
+                    const data = JSON.parse(e.data);
+                    const { progress, message, success } = data;
+
+                    progressBar.style.width = `${progress}%`;
+                    progressMessage.textContent = message;
+                    progressPercent.textContent = `${progress}%`;
+
+                    if (progress === 100) {
+                        buildEventSource.close();
+
+                        if (success) {
+                            showAlert(message, 'success');
+                            setTimeout(() => {
+                                progressWrapper.classList.remove('show');
+                            }, 2000);
+                        } else {
+                            showAlert(message, 'error');
+                        }
+
+                        loadKBList();
+                    }
+                } catch (err) {
+                    console.error('解析进度数据失败:', err);
+                }
+            };
+
+            buildEventSource.onerror = function() {
+                buildEventSource.close();
+                showAlert('构建过程出错', 'error');
+                progressWrapper.classList.remove('show');
+            };
+        }
+
+        // 提问
+        async function askQuestion() {
+            const questionInput = document.getElementById('questionInput');
+            const question = questionInput.value.trim();
+
+            if (!question) {
+                showAlert('请输入问题', 'error');
+                return;
+            }
+
+            if (selectedKBs.size === 0) {
+                showAlert('请至少选择一个知识库', 'error');
+                return;
+            }
+
+            currentQuestion = question;
+            const selectedKBArray = Array.from(selectedKBs);
+
+            // 显示加载状态
+            const resultsEl = document.getElementById('chatResults');
+            resultsEl.innerHTML = `
+                <div class="empty-state">
+                    <div class="loading-spinner dark" style="width: 32px; height: 32px; margin-bottom: 16px;"></div>
+                    <p>正在检索知识库...</p>
+                </div>
+            `;
+
+            try {
+                const response = await fetch('/chat', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        question: question,
+                        selected_kbs: selectedKBArray,
+                    })
+                });
+
+                const data = await response.json();
+                renderKnowledgeSelection(data, selectedKBArray);
+            } catch (error) {
+                resultsEl.innerHTML = `
+                    <div class="alert alert-error show">
+                        请求失败: ${error.message}
+                    </div>
+                `;
+            }
+        }
+
+        // 渲染结果
+        function renderKnowledgeSelection(data, selectedKBs) {
+            const resultsEl = document.getElementById('chatResults');
+
+            if (data.error) {
+                resultsEl.innerHTML = `<div class="alert alert-error show">${data.error}</div>`;
+                return;
+            }
+
+            let knowledgeHTML = '';
+
+            if (Array.isArray(data.local_knowledge) && data.local_knowledge.length > 0) {
+                knowledgeHTML = `
+                    <div class="result-section">
+                        <div class="result-section-title">
+                            <i class="fas fa-file-alt"></i> 检索到的知识块
+                            <small style="color: var(--text-placeholder); font-weight: normal;">（勾选用于生成回答）</small>
+                        </div>
+                        <div class="knowledge-panels" id="knowledgePanels">
+                            ${data.local_knowledge.map((item, index) => {
+                                if (typeof item === 'object' && item.content) {
+                                    return `
+                                        <div class="knowledge-item expanded" data-index="${index}">
+                                            <div class="knowledge-header" onclick="toggleKnowledgeItem(this)">
+                                                <input type="checkbox" class="kb-checkbox" checked data-index="${index}" onclick="event.stopPropagation()">
+                                                <span class="knowledge-source">
+                                                    <i class="fas fa-database"></i> ${item.source || '未知来源'}
+                                                </span>
+                                                <i class="fas fa-chevron-down knowledge-toggle"></i>
+                                            </div>
+                                            <div class="knowledge-content">
+                                                <div class="knowledge-text">${escapeHtml(item.content)}</div>
+                                            </div>
+                                        </div>
+                                    `;
+                                } else {
+                                    return `<div class="alert alert-info show">${item}</div>`;
+                                }
+                            }).join('')}
+                        </div>
+                        <button class="btn" onclick="generateAnswerWithSelected('${selectedKBs.join(',')}')" style="margin-top: 12px;">
+                            <i class="fas fa-magic"></i> 使用选中的知识块生成回答
+                        </button>
+                    </div>
+                `;
+            } else {
+                knowledgeHTML = `
+                    <div class="result-section">
+                        <div class="alert alert-info show">
+                            <i class="fas fa-info-circle"></i> 未在选中的知识库中找到相关内容
+                        </div>
+                    </div>
+                `;
+            }
+
+            resultsEl.innerHTML = `
+                <div class="result-section">
+                    <div class="result-section-title">
+                        <i class="fas fa-question-circle"></i> 问题
+                    </div>
+                    <div class="question-display">${escapeHtml(data.question)}</div>
+                </div>
+
+                ${knowledgeHTML}
+
+                <div class="result-section" id="answerSection" style="display: ${none};">
+                    <div class="result-section-title">
+                        <i class="fas fa-lightbulb"></i> 最终回答
+                    </div>
+                    <div class="answer-box">
+                        <div class="answer-content" id="finalAnswer">${renderMarkdown(data.final_answer || '')}</div>
+                        <div class="toolbar">
+                            <button class="btn btn-sm btn-secondary" onclick="copyAnswer()">
+                                <i class="fas fa-copy"></i> 复制回答
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        // 切换知识块展开/收起
+        function toggleKnowledgeItem(header) {
+            const item = header.parentElement;
+            item.classList.toggle('expanded');
+        }
+
+        // 使用选中的知识块生成回答
+        async function generateAnswerWithSelected(selectedKBsStr) {
+            const selectedKBs = selectedKBsStr.split(',');
+            const checkboxes = document.querySelectorAll('.kb-checkbox:checked');
+            const selectedKnowledge = [];
+
+            checkboxes.forEach(checkbox => {
+                const index = checkbox.dataset.index;
+                const item = checkbox.closest('.knowledge-item');
+                const content = item.querySelector('.knowledge-text').textContent;
+                const source = item.querySelector('.knowledge-source').textContent.trim();
+                selectedKnowledge.push({ index: parseInt(index), content, source });
+            });
+
+            if (selectedKnowledge.length === 0) {
+                showAlert('请至少选择一个知识块', 'error');
+                return;
+            }
+
+            const answerSection = document.getElementById('answerSection');
+            const finalAnswer = document.getElementById('finalAnswer');
+
+            answerSection.style.display = 'block';
+            finalAnswer.innerHTML = '<div class="loading-spinner dark"></div> 正在生成回答...';
+
+            try {
+                const response = await fetch('/chat', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        question: currentQuestion,
+                        selected_kbs: selectedKBs,
+                        selected_knowledge: selectedKnowledge
+                    })
+                });
+
+                const data = await response.json();
+                finalAnswer.innerHTML = renderMarkdown(data.final_answer || '生成回答失败');
+            } catch (error) {
+                finalAnswer.innerHTML = `<span style="color: var(--error);">请求失败: ${error.message}</span>`;
+            }
+        }
+
+        // 渲染Markdown
+        function renderMarkdown(text) {
+            if (!text) return '';
+            // 转义HTML
+            text = escapeHtml(text);
+            // 加粗
+            text = text.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
+            // 无序列表
+            text = text.replace(/^• (.*$)/gim, '<li>$1</li>');
+            text = text.replace(/^(\d+)\. (.*$)/gim, '<li>$2</li>');
+            // 包裹列表
+            if (text.includes('<li>')) {
+                text = text.replace(/(<li>.*<\/li>)/gs, '<ul>$1</ul>');
+            }
+            // 换行
+            text = text.replace(/\n/g, '<br>');
+            return text;
+        }
+
+        // 转义HTML
+        function escapeHtml(text) {
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        }
+
+        // 复制回答
+        function copyAnswer() {
+            const answerEl = document.getElementById('finalAnswer');
+            const text = answerEl.innerText;
+
+            navigator.clipboard.writeText(text).then(() => {
+                showAlert('已复制到剪贴板', 'success');
+            }).catch(() => {
+                showAlert('复制失败', 'error');
+            });
+        }
+
+        // 清空问题
+        function clearQuestion() {
+            document.getElementById('questionInput').value = '';
+        }
+
+        // 处理回车键
+        function handleEnter(event) {
+            if (event.key === 'Enter') {
+                askQuestion();
+            }
+        }
+
+        // 显示提示
+        function showAlert(message, type) {
+            const alertBox = document.getElementById('alertBox');
+            alertBox.className = `alert alert-${type} show`;
+            alertBox.textContent = message;
+
+            setTimeout(() => {
+                alertBox.classList.remove('show');
+            }, 3000);
+        }
+    </script>
+</body>
+</html>

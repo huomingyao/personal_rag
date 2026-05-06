@@ -1,0 +1,2303 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>智慧知识库 | 智能问答系统</title>
+    <link rel="stylesheet" href="https://cdn.bootcdn.net/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            /* 🔥 浅色清新风主题 - 渐变蓝紫 */
+            --primary: #667eea;
+            --primary-light: #8897ed;
+            --primary-dark: #5a6fd6;
+            --primary-lighter: #f0f0ff;
+            --primary-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            --secondary: #10b981;
+            --success: #10b981;
+            --error: #ef4444;
+            --warning: #F59E0B;
+            --bg-light: #FAFBFC;
+            --bg-white: #ffffff;
+            --bg-blue-light: #F0F4F8;
+            --text-main: #1F2937;
+            --text-secondary: #6B7280;
+            --text-muted: #9CA3AF;
+            --text-placeholder: #D1D5DB;
+            --border-light: #E5E7EB;
+            --border-hover: #CBD5E1;
+            --shadow-sm: 0 2px 8px rgba(102, 126, 234, 0.08);
+            --shadow-md: 0 4px 16px rgba(102, 126, 234, 0.12);
+            --shadow-lg: 0 8px 32px rgba(102, 126, 234, 0.18);
+            --shadow-primary: 0 4px 20px rgba(102, 126, 234, 0.3);
+            --radius-sm: 8px;
+            --radius-md: 12px;
+            --radius-lg: 16px;
+            --radius-xl: 24px;
+            --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            --sidebar-width: 260px;
+            --header-height: 64px;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Noto Sans SC', 'PingFang SC', 'Microsoft YaHei', Arial, sans-serif;
+        }
+
+        body {
+            min-height: 100vh;
+            background-color: var(--bg-light);
+            color: var(--text-main);
+            line-height: 1.6;
+            overflow-y: auto;
+            overflow-x: hidden;
+        }
+
+        /* 顶部导航 - 渐变主题 */
+        .top-nav {
+            height: var(--header-height);
+            background: var(--primary-gradient);
+            display: flex;
+            align-items: center;
+            padding: 0 32px;
+            box-shadow: var(--shadow-md);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .top-nav h1 {
+            font-size: 22px;
+            font-weight: 700;
+            color: white;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            letter-spacing: 0.5px;
+        }
+
+        .top-nav h1 i {
+            font-size: 26px;
+        }
+
+        .top-nav .subtitle {
+            font-size: 13px;
+            color: rgba(255,255,255,0.85);
+            margin-left: 16px;
+            padding-left: 16px;
+            border-left: 1px solid rgba(255,255,255,0.25);
+        }
+
+        .header-actions {
+            margin-left: auto;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .header-actions .btn-help {
+            background: rgba(255,255,255,0.15);
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 13px;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .header-actions .btn-help:hover {
+            background: rgba(255,255,255,0.25);
+        }
+
+        /* 主容器 */
+        .container {
+            display: flex;
+            flex: 1;
+            max-width: 1600px;
+            margin: 0 auto;
+            padding: 24px;
+            gap: 24px;
+            min-height: 0;
+        }
+
+        /* 侧边栏 */
+        .sidebar-nav {
+            width: var(--sidebar-width);
+            min-height: 80vh;
+            max-height: calc(100vh - 80px);
+            background: var(--bg-white);
+            border-radius: var(--radius-lg);
+            box-shadow: var(--shadow-sm);
+            padding: 20px 16px;
+            display: flex;
+            flex-direction: column;
+            overflow-y: auto;
+        }
+
+        .sidebar-nav::-webkit-scrollbar {
+            width: 5px;
+        }
+
+        .sidebar-nav::-webkit-scrollbar-track {
+            background: transparent;
+        }
+
+        .sidebar-nav::-webkit-scrollbar-thumb {
+            background: var(--border-hover);
+            border-radius: 3px;
+        }
+
+        .sidebar-logo {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 8px 12px 24px;
+            border-bottom: 1px solid var(--border-light);
+            margin-bottom: 16px;
+            flex-shrink: 0;
+        }
+
+        .sidebar-logo i {
+            font-size: 32px;
+            color: var(--primary);
+            margin-right: 10px;
+        }
+
+        .sidebar-logo span {
+            font-size: 18px;
+            font-weight: 700;
+            color: var(--primary-dark);
+        }
+
+        .nav-section {
+            margin-bottom: 16px;
+            flex-shrink: 0;
+        }
+
+        .nav-section-title {
+            font-size: 11px;
+            font-weight: 600;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            padding: 12px 12px 8px;
+        }
+
+        .nav-item {
+            padding: 16px 20px;
+            border: none;
+            background: transparent;
+            color: var(--text-secondary);
+            font-size: 15px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            border-radius: var(--radius-md);
+            margin-bottom: 4px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .nav-item::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 3px;
+            height: 0;
+            background: var(--primary);
+            border-radius: 0 2px 2px 0;
+            transition: var(--transition);
+        }
+
+        .nav-item:hover {
+            background: var(--primary-lighter);
+            color: var(--primary);
+        }
+
+        .nav-item.active {
+            background: var(--primary-lighter);
+            color: var(--primary);
+        }
+
+        .nav-item.active::before {
+            height: 60%;
+        }
+
+        .nav-item i {
+            width: 20px;
+            text-align: center;
+            font-size: 17px;
+        }
+
+        /* 主内容区 */
+        .main-content {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            gap: 24px;
+            min-width: 0;
+        }
+
+        /* 页面容器 */
+        .page-container {
+            display: none;
+            flex: 1;
+        }
+
+        .page-container.active {
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* 布局 */
+        .content-layout {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 24px;
+            flex: 1;
+            min-height: 0;
+        }
+
+        @media (max-width: 1200px) {
+            .content-layout {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* 面板通用样式 */
+        .panel {
+            background: var(--bg-white);
+            border-radius: var(--radius-lg);
+            box-shadow: var(--shadow-sm);
+            overflow: hidden;
+        }
+
+        .panel-header {
+            padding: 20px 24px;
+            border-bottom: 1px solid var(--border-light);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .panel-header-bar {
+            padding: 16px 24px;
+            background: var(--primary-gradient);
+            color: white;
+        }
+
+        .panel-header h2 {
+            font-size: 16px;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .panel-header h2 i {
+            font-size: 18px;
+        }
+
+        .panel-body {
+            padding: 24px;
+        }
+
+        /* 🔥 新的横向布局 - 管理页面 */
+        .manage-header-row {
+            display: flex;
+            gap: 24px;
+            margin-bottom: 24px;
+            min-height: 80vh;
+            max-height: calc(100vh - 100px);
+        }
+
+        .manage-header-row .panel {
+            flex: 1;
+            min-height: 100%;
+        }
+
+        .create-form {
+            display: flex;
+            gap: 12px;
+        }
+
+        .create-form input {
+            flex: 1;
+            padding: 14px 18px;
+            border: 2px solid var(--border-light);
+            border-radius: var(--radius-md);
+            font-size: 14px;
+            outline: none;
+            transition: var(--transition);
+            background: var(--bg-light);
+        }
+
+        .create-form input:focus {
+            border-color: var(--primary);
+            background: var(--bg-white);
+            box-shadow: 0 0 0 4px rgba(74, 144,226, 0.1);
+        }
+
+        /* 按钮 */
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            background: var(--primary-gradient);
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: var(--radius-md);
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 600;
+            transition: var(--transition);
+            white-space: nowrap;
+            box-shadow: 0 2px 8px rgba(102, 126, 234, 0.3);
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
+            background: linear-gradient(135deg, var(--primary-light) 0%, var(--primary-dark) 100%);
+        }
+
+        .btn:active {
+            transform: translateY(0);
+        }
+
+        .btn-sm {
+            padding: 8px 14px;
+            font-size: 12px;
+            border-radius: var(--radius-sm);
+        }
+
+        .btn-light {
+            background: var(--bg-light);
+            color: var(--text-secondary);
+            border: 1px solid var(--border-light);
+            box-shadow: none;
+        }
+
+        .btn-light:hover {
+            background: var(--primary-lighter);
+            color: var(--primary);
+            box-shadow: none;
+        }
+
+        .btn-success {
+            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+            box-shadow: 0 2px 8px rgba(16, 185, 129, 0.3);
+        }
+
+        .btn-success:hover {
+            background: linear-gradient(135deg, #34d399 0%, #10b981 100%);
+            box-shadow: 0 6px 20px rgba(16, 185, 129, 0.4);
+        }
+
+        .btn-danger {
+            background: var(--error);
+            box-shadow: 0 2px 8px rgba(231, 76, 60, 0.25);
+        }
+
+        .btn-danger:hover {
+            background: #C0392B;
+        }
+
+        .btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        /* 统计卡片行 */
+        .stats-row {
+            display: flex;
+            gap: 16px;
+            margin-bottom: 24px;
+        }
+
+        .stat-card {
+            flex: 1;
+            padding: 20px;
+            background: var(--bg-white);
+            border-radius: var(--radius-lg);
+            box-shadow: var(--shadow-sm);
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            border: 1px solid var(--border-light);
+            transition: var(--transition);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .stat-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: var(--primary-gradient);
+            opacity: 0;
+            transition: var(--transition);
+        }
+
+        .stat-card:hover {
+            border-color: var(--primary-light);
+            box-shadow: var(--shadow-md);
+            transform: translateY(-2px);
+        }
+
+        .stat-card:hover::before {
+            opacity: 1;
+        }
+
+        .stat-icon {
+            width: 52px;
+            height: 52px;
+            border-radius: var(--radius-md);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+        }
+
+        .stat-icon.blue {
+            background: linear-gradient(135deg, var(--primary-lighter), var(--bg-white));
+            color: var(--primary);
+        }
+
+        .stat-icon.green {
+            background: linear-gradient(135deg, rgba(16, 185, 129, 0.15), var(--bg-white));
+            color: var(--success);
+        }
+
+        .stat-icon.orange {
+            background: linear-gradient(135deg, rgba(245, 158, 11, 0.15), var(--bg-white));
+            color: var(--warning);
+        }
+
+        .stat-info h3 {
+            font-size: 26px;
+            font-weight: 700;
+            color: var(--text-main);
+            line-height: 1;
+        }
+
+        .stat-info p {
+            font-size: 13px;
+            color: var(--text-muted);
+            margin-top: 4px;
+        }
+
+        /* 知识库网格 */
+        .kb-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 16px;
+            min-height: 60vh;
+            max-height: calc(100vh - 200px);
+            overflow-y: auto;
+            padding-right: 8px;
+        }
+
+        .kb-grid::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        .kb-grid::-webkit-scrollbar-track {
+            background: var(--bg-light);
+            border-radius: 3px;
+        }
+
+        .kb-grid::-webkit-scrollbar-thumb {
+            background: var(--border-hover);
+            border-radius: 3px;
+        }
+
+        .kb-card {
+            border: 2px solid var(--border-light);
+            border-radius: var(--radius-lg);
+            padding: 18px;
+            cursor: pointer;
+            transition: var(--transition);
+            position: relative;
+            background: var(--bg-white);
+            display: flex;
+            flex-direction: column;
+        }
+
+        .kb-card:hover {
+            border-color: var(--primary-light);
+            box-shadow: var(--shadow-md), 0 0 0 1px var(--primary-lighter);
+            transform: translateY(-4px);
+        }
+
+        .kb-card.active {
+            border-color: var(--primary);
+            background: linear-gradient(135deg, var(--primary-lighter), var(--bg-white));
+            box-shadow: 0 0 0 2px rgba(102, 126, 234, 0.2);
+        }
+
+        .kb-card.built {
+            border-left: 4px solid var(--success);
+        }
+
+        .kb-card.unbuilt {
+            border-left: 4px solid var(--warning);
+        }
+
+        .kb-card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 10px;
+        }
+
+        .kb-name {
+            font-weight: 700;
+            font-size: 15px;
+            color: var(--text-main);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            line-height: 1.3;
+        }
+
+        .kb-name i {
+            font-size: 18px;
+            color: var(--primary);
+        }
+
+        .kb-status-tag {
+            padding: 4px 10px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+            flex-shrink: 0;
+        }
+
+        .kb-status-tag.built {
+            background: rgba(80, 200, 120, 0.15);
+            color: var(--success);
+        }
+
+        .kb-status-tag.unbuilt {
+            background: rgba(245, 166, 35, 0.15);
+            color: var(--warning);
+        }
+
+        .kb-meta {
+            font-size: 13px;
+            color: var(--text-muted);
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .kb-meta-item {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .kb-actions {
+            display: flex;
+            gap: 8px;
+            margin-top: auto;
+            flex-wrap: wrap;
+        }
+
+        .kb-actions .btn {
+            flex: 1;
+            min-width: 65px;
+        }
+
+        /* 文件列表 */
+        .file-list {
+            margin-top: 12px;
+            padding-top: 12px;
+            border-top: 1px solid var(--border-light);
+            display: none;
+            max-height: 150px;
+            overflow-y: auto;
+        }
+
+        .file-list.show {
+            display: block;
+            animation: slideDown 0.3s ease;
+        }
+
+        @keyframes slideDown {
+            from { opacity: 0; transform: translateY(-10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .file-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px 10px;
+            font-size: 13px;
+            color: var(--text-secondary);
+            border-radius: var(--radius-sm);
+            transition: var(--transition);
+        }
+
+        .file-item:hover {
+            background: var(--bg-light);
+        }
+
+        .file-item i {
+            color: var(--primary);
+            font-size: 14px;
+        }
+
+        .file-item .file-size {
+            margin-left: auto;
+            color: var(--text-muted);
+            font-size: 12px;
+        }
+
+        .file-empty {
+            text-align: center;
+            padding: 20px;
+            color: var(--text-placeholder);
+            font-size: 13px;
+        }
+
+        /* 上传区域 */
+        .upload-area {
+            border: 2px dashed var(--border-light);
+            border-radius: var(--radius-md);
+            padding: 20px 16px;
+            text-align: center;
+            cursor: pointer;
+            transition: var(--transition);
+            margin: 12px 16px;
+            background: var(--bg-light);
+            max-width: 340px;
+        }
+
+        .upload-area:hover {
+            border-color: var(--primary);
+            background: var(--primary-lighter);
+        }
+
+        .upload-area.dragover {
+            border-color: var(--primary);
+            background: var(--primary-lighter);
+            border-style: solid;
+            transform: scale(1.01);
+        }
+
+        .upload-area i {
+            font-size: 38px;
+            color: var(--primary);
+            margin-bottom: 10px;
+            display: block;
+        }
+
+        .upload-area p {
+            color: var(--text-secondary);
+            font-size: 14px;
+            margin: 0;
+        }
+
+        .upload-area .hint {
+            color: var(--text-placeholder);
+            font-size: 12px;
+            margin-top: 6px;
+        }
+
+        /* 进度条 */
+        .progress-wrapper {
+            margin-top: 16px;
+            padding: 16px;
+            background: var(--bg-light);
+            border-radius: var(--radius-md);
+            display: none;
+        }
+
+        .progress-wrapper.show {
+            display: block;
+            animation: fadeIn 0.3s ease;
+        }
+
+        .progress-info {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+            font-size: 13px;
+        }
+
+        .progress-message {
+            color: var(--text-secondary);
+            font-weight: 500;
+        }
+
+        .progress-percent {
+            color: var(--primary);
+            font-weight: 700;
+            font-size: 15px;
+        }
+
+        .progress-bar-bg {
+            height: 8px;
+            background: var(--border-light);
+            border-radius: 4px;
+            overflow: hidden;
+        }
+
+        .progress-bar-fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--primary-light), var(--primary));
+            border-radius: 4px;
+            transition: width 0.3s ease;
+            width: 0%;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        /* 提示 */
+        .alert {
+            padding: 12px 16px;
+            border-radius: var(--radius-md);
+            font-size: 14px;
+            margin-top: 16px;
+            display: none;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .alert.show {
+            display: flex;
+            animation: fadeIn 0.3s ease;
+        }
+
+        .alert-success {
+            background: rgba(80, 200, 120, 0.1);
+            color: var(--success);
+            border: 1px solid rgba(80, 200, 120, 0.2);
+        }
+
+        .alert-error {
+            background: rgba(231, 76, 60, 0.1);
+            color: var(--error);
+            border: 1px solid rgba(231, 76, 60, 0.2);
+        }
+
+        .alert-info {
+            background: var(--primary-lighter);
+            color: var(--primary);
+            border: 1px solid rgba(74, 144, 226, 0.2);
+        }
+
+        /* 知识库选择标签 */
+        .kb-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .kb-tag-item {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 10px 16px;
+            background: var(--bg-light);
+            border: 2px solid transparent;
+            border-radius: 24px;
+            cursor: pointer;
+            transition: var(--transition);
+            font-size: 14px;
+            color: var(--text-secondary);
+            font-weight: 500;
+        }
+
+        .kb-tag-item:hover:not(.disabled) {
+            background: var(--primary-lighter);
+            color: var(--primary);
+        }
+
+        .kb-tag-item.selected {
+            background: var(--primary-lighter);
+            border-color: var(--primary);
+            color: var(--primary-dark);
+            font-weight: 600;
+        }
+
+        .kb-tag-item.disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .kb-tag-item .check-icon {
+            display: none;
+        }
+
+        .kb-tag-item.selected .check-icon {
+            display: inline;
+        }
+
+        .kb-tag-item.selected .unchecked-icon {
+            display: none;
+        }
+
+        /* 问答面板 */
+        .chat-panel {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            min-height: 800px;
+            border-radius: var(--radius-lg);
+            overflow: hidden;
+            background: var(--bg-white);
+            box-shadow: var(--shadow-sm);
+        }
+
+        .chat-header {
+            padding: 18px 24px;
+            border-bottom: 1px solid var(--border-light);
+            background: var(--bg-white);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .chat-header h2 {
+            font-size: 17px;
+            font-weight: 700;
+            color: var(--text-main);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .chat-header h2 i {
+            font-size: 20px;
+            color: var(--primary);
+        }
+
+        .chat-header-actions {
+            display: flex;
+            gap: 10px;
+        }
+
+        /* 聊天结果 */
+        .chat-results {
+            flex: 1;
+            padding: 24px;
+            overflow-y: auto;
+            background: var(--bg-light);
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .chat-message {
+            display: flex;
+            gap: 14px;
+            animation: messageIn 0.4s ease;
+        }
+
+        @keyframes messageIn {
+            from { opacity: 0; transform: translateY(15px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .chat-message.user {
+            justify-content: flex-end;
+        }
+
+        .chat-message.ai {
+            justify-content: flex-start;
+        }
+
+        .message-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 16px;
+            font-weight: 600;
+            flex-shrink: 0;
+        }
+
+        .message-avatar.user {
+            background: var(--primary-gradient);
+            color: white;
+        }
+
+        .message-avatar.ai {
+            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+            color: white;
+        }
+
+        .message-content {
+            max-width: 75%;
+            padding: 14px 18px;
+            border-radius: 18px;
+            font-size: 15px;
+            line-height: 1.7;
+            color: var(--text-main);
+            word-wrap: break-word;
+        }
+
+        .chat-message.user .message-content {
+            background: var(--primary-gradient);
+            color: white;
+            border-bottom-right-radius: 6px;
+            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
+        }
+
+        .chat-message.ai .message-content {
+            background: var(--bg-white);
+            border: 1px solid var(--border-light);
+            border-bottom-left-radius: 6px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+        }
+
+        /* 聊天输入 */
+        .chat-input-area {
+            padding: 18px 24px;
+            border-top: 1px solid var(--border-light);
+            background: var(--bg-white);
+        }
+
+        .input-wrapper {
+            display: flex;
+            gap: 14px;
+            align-items: center;
+        }
+
+        .input-wrapper .btn.btn-light {
+            height: 44px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .input-container {
+            flex: 1;
+            position: relative;
+        }
+
+        .input-container input {
+            width: 100%;
+            padding: 14px 50px 14px 18px;
+            border: 2px solid var(--border-light);
+            border-radius: 24px;
+            font-size: 15px;
+            outline: none;
+            transition: var(--transition);
+            background: var(--bg-white);
+        }
+
+        .input-container input:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 4px rgba(102, 126, 234, 0.15), 0 2px 8px rgba(102, 126, 234, 0.1);
+        }
+
+        .input-container .input-actions {
+            position: absolute;
+            right: 14px;
+            top: 50%;
+            transform: translateY(-50%);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .input-actions button {
+            background: none;
+            border: none;
+            color: var(--text-muted);
+            cursor: pointer;
+            padding: 6px;
+            border-radius: 50%;
+            transition: var(--transition);
+            font-size: 16px;
+        }
+
+        .input-actions button:hover {
+            background: var(--border-light);
+            color: var(--primary);
+        }
+
+        /* 加载动画 */
+        .loading-spinner {
+            display: inline-block;
+            width: 18px;
+            height: 18px;
+            border: 3px solid rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            border-top-color: white;
+            animation: spin 0.8s linear infinite;
+        }
+
+        .loading-spinner.dark {
+            border-color: var(--border-hover);
+            border-top-color: var(--primary);
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        /* 空状态 */
+        .empty-state {
+            text-align: center;
+            padding: 50px 20px;
+            color: var(--text-muted);
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .empty-state i {
+            font-size: 48px;
+            margin-bottom: 16px;
+            opacity: 0.4;
+            color: var(--primary-light);
+        }
+
+        .empty-state p {
+            font-size: 14px;
+        }
+
+        /* 历史记录 */
+        .history-list {
+            min-height: 25vh;
+            max-height: 30vh;
+            overflow-y: auto;
+        }
+
+        /* 问答页布局 - 左右分栏 */
+        .query-layout {
+            display: grid;
+            grid-template-columns: 280px 1fr;
+            gap: 24px;
+            flex: 1;
+            min-height: 80vh;
+            max-height: calc(100vh - 100px);
+        }
+
+        /* 左侧面板 */
+        .query-sidebar {
+            display: flex;
+            flex-direction: column;
+            gap: 24px;
+            height: 100%;
+        }
+
+        /* 下拉栏面板 */
+        .dropdown-panel {
+            background: var(--bg-white);
+            border-radius: var(--radius-lg);
+            box-shadow: var(--shadow-sm);
+            overflow: hidden;
+        }
+
+        .dropdown-header {
+            padding: 16px 20px;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .dropdown-header:hover {
+            filter: brightness(1.05);
+        }
+
+        .dropdown-header h2 {
+            font-size: 16px;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .dropdown-header h2 i {
+            font-size: 18px;
+        }
+
+        .dropdown-toggle {
+            font-size: 14px;
+            transition: transform 0.3s ease;
+        }
+
+        .dropdown-panel.collapsed .dropdown-toggle {
+            transform: rotate(-90deg);
+        }
+
+        .dropdown-body {
+            min-height: 25vh;
+            max-height: 30vh;
+            overflow-y: auto;
+            transition: max-height 0.3s ease, padding 0.3s ease;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .dropdown-panel.collapsed .dropdown-body {
+            min-height: 0;
+            max-height: 0;
+            overflow: hidden;
+        }
+
+        /* 右侧问答下拉栏的内部布局 */
+        .dropdown-panel:has(.chat-results) .dropdown-body {
+            display: flex;
+            flex-direction: column;
+            min-height: 80vh;
+            max-height: calc(100vh - 100px);
+            height: 100%;
+        }
+
+        .dropdown-panel:has(.chat-results) .chat-results {
+            height: 100%;
+            max-height: 100%;
+            overflow-y: auto;
+        }
+
+        .dropdown-panel.collapsed .dropdown-body {
+            max-height: 0;
+            overflow: hidden;
+            padding: 0;
+        }
+
+        .dropdown-panel.collapsed .panel-body {
+            display: none;
+        }
+
+        /* 折叠面板的特殊样式 */
+        .dropdown-panel .panel-body {
+            padding: 20px;
+        }
+
+        /* 左侧下拉栏头部优化 */
+        .query-sidebar .dropdown-header {
+            padding: 14px 18px;
+        }
+
+        .query-sidebar .dropdown-header h2 {
+            font-size: 15px;
+        }
+
+        .query-sidebar .dropdown-header h2 i {
+            font-size: 16px;
+        }
+
+        /* 右侧智能问答下拉栏头部优化 */
+        .query-main .dropdown-header {
+            padding: 14px 20px;
+            display: grid;
+            grid-template-columns: 1fr auto auto;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .query-main .dropdown-header h2 {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .query-main .dropdown-header .chat-header-actions {
+            order: 3;
+        }
+
+        .history-item {
+            padding: 12px 14px;
+            border-radius: var(--radius-md);
+            cursor: pointer;
+            transition: var(--transition);
+            margin-bottom: 8px;
+            background: var(--bg-light);
+        }
+
+        .history-item:hover {
+            background: var(--primary-lighter);
+        }
+
+        .history-item-question {
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--text-main);
+            margin-bottom: 4px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .history-item-time {
+            font-size: 12px;
+            color: var(--text-muted);
+        }
+
+        /* 响应式 */
+        @media (max-width: 768px) {
+            .container {
+                padding: 12px;
+                flex-direction: column;
+            }
+
+            .sidebar-nav {
+                width: 100%;
+                position: static;
+            }
+
+            .manage-header-row {
+                flex-direction: column;
+            }
+
+            .stats-row {
+                flex-direction: column;
+            }
+
+            .kb-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .top-nav {
+                padding: 0 16px;
+            }
+
+            .top-nav .subtitle {
+                display: none;
+            }
+
+            .message-content {
+                max-width: 85%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- 顶部导航 -->
+    <div class="top-nav">
+        <h1><i class="fas fa-graduation-cap"></i> 智慧知识库</h1>
+        <span class="subtitle">智能问答系统</span>
+        <div class="header-actions">
+            <button class="btn-help"><i class="fas fa-question-circle"></i> 帮助</button>
+        </div>
+    </div>
+
+    <div class="container">
+        <!-- 侧边栏 -->
+        <div class="sidebar-nav">
+            <div class="sidebar-logo">
+                <i class="fas fa-brain"></i>
+                <span>问答平台</span>
+            </div>
+
+            <div class="nav-section">
+                <div class="nav-section-title">功能菜单</div>
+                <button class="nav-item active" onclick="switchPage('manage-page')">
+                    <i class="fas fa-folder-cog"></i>
+                    <span>知识库管理</span>
+                </button>
+                <button class="nav-item" onclick="switchPage('query-page')">
+                    <i class="fas fa-comments"></i>
+                    <span>智能问答</span>
+                </button>
+            </div>
+
+            <div class="nav-section">
+                <div class="nav-section-title">快捷操作</div>
+                <button class="nav-item" onclick="showHelp()">
+                    <i class="fas fa-lightbulb"></i>
+                    <span>使用指南</span>
+                </button>
+                <button class="nav-item" onclick="showAbout()">
+                    <i class="fas fa-info-circle"></i>
+                    <span>关于系统</span>
+                </button>
+            </div>
+        </div>
+
+        <!-- 主内容区 -->
+        <div class="main-content">
+            <!-- 管理页面 -->
+            <div id="manage-page" class="page-container active">
+                <!-- 统计信息 -->
+                <div class="stats-row">
+                    <div class="stat-card">
+                        <div class="stat-icon blue">
+                            <i class="fas fa-database"></i>
+                        </div>
+                        <div class="stat-info">
+                            <h3 id="totalKbCount">0</h3>
+                            <p>知识库总数</p>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon green">
+                            <i class="fas fa-check-circle"></i>
+                        </div>
+                        <div class="stat-info">
+                            <h3 id="builtKbCount">0</h3>
+                            <p>已构建知识库</p>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon orange">
+                            <i class="fas fa-file-alt"></i>
+                        </div>
+                        <div class="stat-info">
+                            <h3 id="totalFileCount">0</h3>
+                            <p>文档总数</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 🔥 新的横向布局：创建知识库 + 我的知识库 -->
+                <div class="manage-header-row">
+                    <!-- 创建知识库 -->
+                    <div class="panel" style="flex: 0 0 340px; width: 340px; height: 100%;">
+                        <div class="panel-header-bar">
+                            <h2><i class="fas fa-plus-circle"></i> 创建知识库</h2>
+                        </div>
+                        <div class="panel-body" style="min-height: 50vh;">
+                            <div class="create-form">
+                                <input type="text" id="newKbName" placeholder="输入知识库名称，例如：课程资料">
+                                <button class="btn" onclick="createKB()">
+                                    <i class="fas fa-plus"></i> 创建
+                                </button>
+                            </div>
+                        </div>
+                        <!-- 上传区域 -->
+                        <div class="upload-area" id="uploadArea" onclick="document.getElementById('fileInput').click()">
+                            <input type="file" id="fileInput" multiple accept=".txt,.pdf,.docx,.md,.json" style="display: none;" onchange="handleFileUpload()">
+                            <i class="fas fa-cloud-upload-alt"></i>
+                            <p>点击或拖拽文件上传到此区域</p>
+                            <p class="hint">仅支持 TXT / PDF / Word / Markdown / JSON</p>
+                        </div>
+                        <!-- 进度显示 -->
+                        <div id="progressWrapper" class="progress-wrapper">
+                            <div class="progress-info">
+                                <span class="progress-message" id="progressMessage">正在处理...</span>
+                                <span class="progress-percent" id="progressPercent">0%</span>
+                            </div>
+                            <div class="progress-bar-bg">
+                                <div class="progress-bar-fill" id="progressBar"></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 我的知识库 -->
+                    <div class="panel" style="flex: 2;">
+                        <div class="panel-header-bar">
+                            <h2><i class="fas fa-database"></i> 我的知识库</h2>
+                            <span id="kbCount" style="font-size: 12px; opacity: 0.9;">0 个</span>
+                        </div>
+                        <div class="panel-body">
+                            <div id="kbGrid" class="kb-grid">
+                                <div class="empty-state">
+                                    <i class="fas fa-folder-open"></i>
+                                    <p>暂无知识库，请先创建</p>
+                                </div>
+                            </div>
+
+                            <!-- 提示信息 -->
+                            <div id="alertBox" class="alert"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 问答页面 -->
+            <div id="query-page" class="page-container">
+                <!-- 左右分栏布局 -->
+                <div class="query-layout">
+                    <!-- 左侧面板 -->
+                    <div class="query-sidebar">
+                        <!-- 知识库选择 -->
+                        <div class="dropdown-panel">
+                            <div class="dropdown-header" onclick="toggleDropdown(this)">
+                                <h2><i class="fas fa-check-square"></i> 选择知识库</h2>
+                                <span id="availableKbCount" style="font-size: 12px; opacity: 0.9;">0 个</span>
+                                <i class="fas fa-chevron-down dropdown-toggle"></i>
+                            </div>
+                            <div class="dropdown-body">
+                                <div class="panel-body">
+                                    <div id="kbTags" class="kb-tags">
+                                        <span style="color: var(--text-placeholder); font-size: 14px;">请先创建并构建知识库</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- 历史记录 -->
+                        <div class="dropdown-panel">
+                            <div class="dropdown-header" onclick="toggleDropdown(this)">
+                                <h2><i class="fas fa-history"></i> 历史记录</h2>
+                                <i class="fas fa-chevron-down dropdown-toggle"></i>
+                            </div>
+                            <div class="dropdown-body">
+                                <div class="panel-body">
+                                    <div class="history-list" id="historyList">
+                                        <div class="empty-state" style="padding: 30px;">
+                                            <i class="fas fa-clock"></i>
+                                            <p>暂无历史记录</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 右侧智能问答下拉栏 -->
+                    <div class="dropdown-panel query-main">
+                        <div class="dropdown-header" onclick="toggleDropdown(this)">
+                            <h2><i class="fas fa-robot"></i> 智能问答助手</h2>
+                            <i class="fas fa-chevron-down dropdown-toggle"></i>
+                        </div>
+                        <div class="dropdown-body">
+                            <div class="chat-results" id="chatResults">
+                                <div class="empty-state">
+                                    <i class="fas fa-robot"></i>
+                                    <p>请先在左侧选择知识库，然后输入您的问题</p>
+                                </div>
+                            </div>
+
+                            <div class="chat-input-area">
+                                <div class="input-wrapper">
+                                    <button class="btn btn-light btn-sm" onclick="newChat()" title="新建对话" style="padding: 10px 14px;">
+                                        <i class="fas fa-plus"></i>
+                                    </button>
+                                    <div class="input-container">
+                                        <input type="text" id="questionInput" placeholder="输入您的问题，例如：这门课程的主要内容是什么？" onkeypress="handleEnter(event)">
+                                        <div class="input-actions">
+                                            <button onclick="clearQuestion()" title="清空">
+                                                <i class="fas fa-times"></i>
+                                            </button>
+                                        </div>
+                                    </div>
+                                    <button class="btn" id="submitBtn" onclick="askQuestion()">
+                                        <i class="fas fa-paper-plane"></i> 提问
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // 全局状态
+        let currentKB = null;
+        let kbData = [];
+        let selectedKBs = new Set();
+        let currentQuestion = '';
+        let buildEventSource = null;
+        let chatHistory = [];
+
+        // 初始化
+        window.onload = function() {
+            loadKBList();
+            setupDragDrop();
+        };
+
+        // 切换页面
+        function switchPage(pageId) {
+            document.querySelectorAll('.page-container').forEach(page => {
+                page.classList.remove('active');
+            });
+
+            document.getElementById(pageId).classList.add('active');
+
+            document.querySelectorAll('.nav-item').forEach(btn => {
+                btn.classList.remove('active');
+            });
+
+            if (pageId === 'manage-page') {
+                document.querySelector('[onclick="switchPage(\'manage-page\')"]').classList.add('active');
+            } else if (pageId === 'query-page') {
+                document.querySelector('[onclick="switchPage(\'query-page\')"]').classList.add('active');
+            }
+        }
+
+        // 切换下拉栏
+        function toggleDropdown(header) {
+            const panel = header.parentElement;
+            panel.classList.toggle('collapsed');
+        }
+
+        // 加载知识库列表
+        async function loadKBList() {
+            try {
+                const response = await fetch('/api/kb/list');
+                const data = await response.json();
+
+                if (data.success) {
+                    kbData = data.data;
+                    renderKBGrid();
+                    renderKBTags();
+                    updateStats();
+                    document.getElementById('kbCount').textContent = `${kbData.length} 个`;
+                    document.getElementById('availableKbCount').textContent = `${kbData.filter(kb => kb.is_built).length} 个`;
+                }
+            } catch (error) {
+                showAlert('加载知识库列表失败', 'error');
+                console.error('加载知识库失败:', error);
+            }
+        }
+
+        // 更新统计信息
+        function updateStats() {
+            document.getElementById('totalKbCount').textContent = kbData.length;
+            document.getElementById('builtKbCount').textContent = kbData.filter(kb => kb.is_built).length;
+            const totalFiles = kbData.reduce((sum, kb) => sum + (kb.file_count || 0), 0);
+            document.getElementById('totalFileCount').textContent = totalFiles;
+        }
+
+        // 渲染知识库网格
+        function renderKBGrid() {
+            const container = document.getElementById('kbGrid');
+
+            if (kbData.length === 0) {
+                container.innerHTML = `
+                    <div class="empty-state">
+                        <i class="fas fa-folder-open"></i>
+                        <p>暂无知识库，请先创建</p>
+                    </div>
+                `;
+                return;
+            }
+
+            container.innerHTML = kbData.map(kb => `
+                <div class="kb-card ${kb.is_built ? 'built' : 'unbuilt'} ${currentKB === kb.name ? 'active' : ''}" data-name="${kb.name}" onclick="selectKB('${kb.name}')">
+                    <div class="kb-card-header">
+                        <div class="kb-name">
+                            <i class="fas fa-database"></i>
+                            ${kb.name}
+                        </div>
+                        <span class="kb-status-tag ${kb.is_built ? 'built' : 'unbuilt'}">
+                            ${kb.is_built ? '<i class="fas fa-check"></i> 已就绪' : '<i class="fas fa-clock"></i> 待构建'}
+                        </span>
+                    </div>
+                    <div class="kb-meta">
+                        <span class="kb-meta-item"><i class="fas fa-file"></i> ${kb.file_count} 个文档</span>
+                    </div>
+                    <div class="kb-actions">
+                        <button class="btn btn-sm btn-light" onclick="event.stopPropagation(); loadKBFiles('${kb.name}')">
+                            <i class="fas fa-list"></i> 文件
+                        </button>
+                        <button class="btn btn-sm ${kb.is_built ? 'btn-success' : ''}" onclick="event.stopPropagation(); buildKB('${kb.name}')">
+                            <i class="fas fa-hammer"></i> ${kb.is_built ? '重构' : '构建'}
+                        </button>
+                        <button class="btn btn-sm btn-danger" onclick="event.stopPropagation(); deleteKB('${kb.name}')">
+                            <i class="fas fa-trash"></i>
+                        </button>
+                    </div>
+                    <div class="file-list" id="fileList_${kb.name}"></div>
+                </div>
+            `).join('');
+        }
+
+        // 渲染知识库标签
+        function renderKBTags() {
+            const container = document.getElementById('kbTags');
+            const builtKBs = kbData.filter(kb => kb.is_built);
+
+            if (builtKBs.length === 0) {
+                container.innerHTML = '<span style="color: var(--text-placeholder); font-size: 14px;">请先创建并构建知识库</span>';
+                return;
+            }
+
+            container.innerHTML = kbData.map(kb => {
+                const isSelected = selectedKBs.has(kb.name);
+                const isDisabled = !kb.is_built;
+
+                return `
+                    <div class="kb-tag-item ${isSelected ? 'selected' : ''} ${isDisabled ? 'disabled' : ''}"
+                         onclick="${isDisabled ? '' : `toggleKBTag('${kb.name}')`}">
+                        <i class="far fa-circle unchecked-icon"></i>
+                        <i class="fas fa-check-circle check-icon"></i>
+                        <span>${kb.name}</span>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        // 切换知识库标签
+        function toggleKBTag(kbName) {
+            if (selectedKBs.has(kbName)) {
+                selectedKBs.delete(kbName);
+            } else {
+                selectedKBs.add(kbName);
+            }
+            renderKBTags();
+        }
+
+        // 选择知识库
+        function selectKB(kbName) {
+            currentKB = kbName;
+            renderKBGrid();
+            showAlert(`已选择「${kbName}」，点击上传区域添加文件`, 'info');
+        }
+
+        // 创建知识库
+        async function createKB() {
+            const nameInput = document.getElementById('newKbName');
+            const name = nameInput.value.trim();
+
+            if (!name) {
+                showAlert('请输入知识库名称', 'error');
+                return;
+            }
+
+            try {
+                const response = await fetch('/api/kb/create', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ name })
+                });
+
+                const data = await response.json();
+
+                if (data.success) {
+                    showAlert(data.message, 'success');
+                    nameInput.value = '';
+                    loadKBList();
+                } else {
+                    showAlert(data.message, 'error');
+                }
+            } catch (error) {
+                showAlert('创建失败: ' + error, 'error');
+            }
+        }
+
+        // 删除知识库
+        async function deleteKB(kbName) {
+            if (!confirm(`确定要删除「${kbName}」知识库吗？此操作不可恢复！`)) {
+                return;
+            }
+
+            try {
+                const response = await fetch('/api/kb/delete', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ name: kbName })
+                });
+
+                const data = await response.json();
+
+                if (data.success) {
+                    showAlert(data.message, 'success');
+                    if (currentKB === kbName) currentKB = null;
+                    selectedKBs.delete(kbName);
+                    loadKBList();
+                } else {
+                    showAlert(data.message, 'error');
+                }
+            } catch (error) {
+                showAlert('删除失败: ' + error, 'error');
+            }
+        }
+
+        // 加载知识库文件
+        async function loadKBFiles(kbName) {
+            const fileListEl = document.getElementById(`fileList_${kbName}`);
+
+            if (fileListEl.classList.contains('show')) {
+                fileListEl.classList.remove('show');
+                return;
+            }
+
+            try {
+                const response = await fetch(`/api/kb/files?name=${encodeURIComponent(kbName)}`);
+                const data = await response.json();
+
+                if (data.success) {
+                    if (data.data.length === 0) {
+                        fileListEl.innerHTML = '<div class="file-empty">暂无文件</div>';
+                    } else {
+                        fileListEl.innerHTML = data.data.map(file => `
+                            <div class="file-item">
+                                <i class="fas fa-file-alt"></i>
+                                <span>${file.name}</span>
+                                <span class="file-size">${formatFileSize(file.size)}</span>
+                            </div>
+                        `).join('');
+                    }
+                    fileListEl.classList.add('show');
+                }
+            } catch (error) {
+                console.error('加载文件列表失败:', error);
+            }
+        }
+
+        // 格式化文件大小
+        function formatFileSize(bytes) {
+            if (bytes < 1024) return bytes + ' B';
+            if (bytes < 1024 * 1024) return (bytes / 1024).toFixed(1) + ' KB';
+            return (bytes / (1024 * 1024)).toFixed(1) + ' MB';
+        }
+
+        // 拖拽上传
+        function setupDragDrop() {
+            const uploadArea = document.getElementById('uploadArea');
+
+            uploadArea.addEventListener('dragover', (e) => {
+                e.preventDefault();
+                uploadArea.classList.add('dragover');
+            });
+
+            uploadArea.addEventListener('dragleave', () => {
+                uploadArea.classList.remove('dragover');
+            });
+
+            uploadArea.addEventListener('drop', (e) => {
+                e.preventDefault();
+                uploadArea.classList.remove('dragover');
+
+                if (!currentKB) {
+                    showAlert('请先选择一个知识库', 'error');
+                    return;
+                }
+
+                const files = e.dataTransfer.files;
+
+                // 过滤不支持的文件类型
+                const allowedExtensions = ['.txt', '.pdf', '.docx', '.md', '.json'];
+                const validFiles = Array.from(files).filter(file => {
+                    const ext = '.' + file.name.split('.').pop().toLowerCase();
+                    return allowedExtensions.includes(ext);
+                });
+
+                if (validFiles.length === 0) {
+                    showAlert('仅支持 TXT / PDF / Word / Markdown / JSON', 'error');
+                    return;
+                }
+
+                if (validFiles.length < files.length) {
+                    showAlert(`已过滤 ${files.length - validFiles.length} 个不支持的文件`, 'info');
+                }
+
+                if (validFiles.length > 0) {
+                    uploadFiles(validFiles);
+                }
+            });
+        }
+
+        // 处理文件上传
+        function handleFileUpload() {
+            const fileInput = document.getElementById('fileInput');
+            const files = fileInput.files;
+
+            if (!currentKB) {
+                showAlert('请先选择一个知识库', 'error');
+                fileInput.value = '';
+                return;
+            }
+
+            // 过滤不支持的文件类型
+            const allowedExtensions = ['.txt', '.pdf', '.docx', '.md', '.json'];
+            const validFiles = Array.from(files).filter(file => {
+                const ext = '.' + file.name.split('.').pop().toLowerCase();
+                return allowedExtensions.includes(ext);
+            });
+
+            if (validFiles.length === 0) {
+                showAlert('仅支持 TXT / PDF / Word / Markdown / JSON', 'error');
+                fileInput.value = '';
+                return;
+            }
+
+            if (validFiles.length < files.length) {
+                showAlert(`已过滤 ${files.length - validFiles.length} 个不支持的文件`, 'info');
+            }
+
+            if (validFiles.length > 0) {
+                uploadFiles(validFiles);
+            }
+        }
+
+        // 上传文件
+        async function uploadFiles(files) {
+            if (!currentKB) {
+                showAlert('请先选择一个知识库', 'error');
+                return;
+            }
+
+            showAlert(`正在上传 ${files.length} 个文件...`, 'info');
+
+            let successCount = 0;
+            let failCount = 0;
+            let autoBuildKB = null;
+
+            for (const file of Array.from(files)) {
+                const formData = new FormData();
+                formData.append('kb_name', currentKB);
+                formData.append('file', file);
+
+                try {
+                    const response = await fetch('/api/kb/upload', {
+                        method: 'POST',
+                        body: formData
+                    });
+
+                    const data = await response.json();
+
+                    if (data.success) {
+                        successCount++;
+                        if (data.auto_build) {
+                            autoBuildKB = data.kb_name;
+                        }
+                    } else {
+                        failCount++;
+                    }
+                } catch (error) {
+                    failCount++;
+                }
+            }
+
+            document.getElementById('fileInput').value = '';
+
+            if (failCount === 0) {
+                showAlert(`成功上传 ${successCount} 个文件`, 'success');
+            } else {
+                showAlert(`成功 ${successCount} 个，失败 ${failCount} 个`, 'error');
+            }
+
+            await loadKBList();
+
+            if (autoBuildKB) {
+                setTimeout(() => buildKB(autoBuildKB), 500);
+            }
+        }
+
+        // 构建知识库
+        function buildKB(kbName) {
+            const progressWrapper = document.getElementById('progressWrapper');
+            const progressBar = document.getElementById('progressBar');
+            const progressMessage = document.getElementById('progressMessage');
+            const progressPercent = document.getElementById('progressPercent');
+
+            progressWrapper.classList.add('show');
+            progressBar.style.width = '0%';
+            progressMessage.textContent = '正在构建向量库...';
+            progressPercent.textContent = '0%';
+
+            if (buildEventSource) {
+                buildEventSource.close();
+            }
+
+            buildEventSource = new EventSource(`/build_progress/${encodeURIComponent(kbName)}`);
+
+            buildEventSource.onmessage = function(e) {
+                try {
+                    const data = JSON.parse(e.data);
+                    const { progress, message, success } = data;
+
+                    progressBar.style.width = `${progress}%`;
+                    progressMessage.textContent = message;
+                    progressPercent.textContent = `${progress}%`;
+
+                    if (progress === 100) {
+                        buildEventSource.close();
+
+                        if (success) {
+                            showAlert(message, 'success');
+                            setTimeout(() => {
+                                progressWrapper.classList.remove('show');
+                            }, 2000);
+                        } else {
+                            showAlert(message, 'error');
+                        }
+
+                        loadKBList();
+                    }
+                } catch (err) {
+                    console.error('解析进度数据失败:', err);
+                }
+            };
+
+            buildEventSource.onerror = function() {
+                buildEventSource.close();
+                showAlert('构建过程出错', 'error');
+                progressWrapper.classList.remove('show');
+            };
+        }
+
+        // 提问
+        async function askQuestion() {
+            const questionInput = document.getElementById('questionInput');
+            const question = questionInput.value.trim();
+
+            if (!question) {
+                showAlert('请输入问题', 'error');
+                return;
+            }
+
+            if (selectedKBs.size === 0) {
+                showAlert('请至少选择一个知识库', 'error');
+                return;
+            }
+
+            currentQuestion = question;
+            const selectedKBArray = Array.from(selectedKBs);
+
+            addMessageToChat(question, 'user');
+
+            try {
+                const response = await fetch('/chat', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        question: question,
+                        selected_kbs: selectedKBArray,
+                    })
+                });
+
+                const data = await response.json();
+                renderKnowledgeSelection(data, selectedKBArray);
+            } catch (error) {
+                addMessageToChat(`请求失败: ${error.message}`, 'ai', true);
+            }
+        }
+
+        // 添加聊天消息
+        function addMessageToChat(content, sender, isError = false) {
+            const resultsEl = document.getElementById('chatResults');
+
+            if (resultsEl.querySelector('.empty-state')) {
+                resultsEl.innerHTML = '';
+            }
+
+            const avatarIcon = sender === 'user' ? 'fa-user' : 'fa-robot';
+            const messageClass = sender === 'user' ? 'user' : 'ai';
+            const messageStyle = isError ? 'alert alert-error show' : '';
+
+            const messageHTML = `
+                <div class="chat-message ${messageClass}">
+                    <div class="message-avatar ${messageClass}">
+                        <i class="fas ${avatarIcon}"></i>
+                    </div>
+                    <div class="message-content ${messageStyle}">
+                        ${content}
+                    </div>
+                </div>
+            `;
+
+            resultsEl.insertAdjacentHTML('beforeend', messageHTML);
+            resultsEl.scrollTop = resultsEl.scrollHeight;
+        }
+
+        // 渲染知识选择
+        function renderKnowledgeSelection(data, selectedKBs) {
+            const resultsEl = document.getElementById('chatResults');
+
+            if (data.error) {
+                addMessageToChat(data.error, 'ai', true);
+                return;
+            }
+
+            let knowledgeHTML = '';
+
+            if (Array.isArray(data.local_knowledge) && data.local_knowledge.length > 0) {
+                knowledgeHTML += `
+                    <div class="result-section">
+                        <h3 class="result-section-title">
+                            <i class="fas fa-file-alt"></i> 检索到的相关知识
+                            <small style="font-weight: normal; color: var(--text-muted);">（勾选要使用的知识块）</small>
+                        </h3>
+                        <div id="knowledgePanels" class="knowledge-panels">
+                `;
+
+                data.local_knowledge.forEach((item, index) => {
+                    if (typeof item === 'object' && item.content) {
+                        knowledgeHTML += `
+                            <div class="knowledge-item expanded" data-index="${index}">
+                                <div class="knowledge-header" onclick="toggleKnowledgeItem(this)">
+                                    <input type="checkbox" class="kb-checkbox" checked data-index="${index}" onclick="event.stopPropagation()">
+                                    <span class="knowledge-source">
+                                        <i class="fas fa-database"></i> ${item.source || '未知来源'}
+                                    </span>
+                                    <i class="fas fa-chevron-down knowledge-toggle"></i>
+                                </div>
+                                <div class="knowledge-content">
+                                    <div class="knowledge-text">${escapeHtml(item.content)}</div>
+                                </div>
+                            </div>
+                        `;
+                    }
+                });
+
+                knowledgeHTML += `
+                        </div>
+                        <button class="btn" onclick="generateAnswerWithSelected('${selectedKBs.join(',')}')" style="margin-top: 16px; width: 100%;">
+                            <i class="fas fa-magic"></i> 使用选中的知识生成回答
+                        </button>
+                    </div>
+                `;
+            } else {
+                knowledgeHTML += `
+                    <div class="alert alert-info show">
+                        <i class="fas fa-info-circle"></i> 未在选中的知识库中找到相关内容
+                    </div>
+                `;
+            }
+
+            const aiMessageHTML = `
+                <div class="chat-message ai">
+                    <div class="message-avatar ai">
+                        <i class="fas fa-robot"></i>
+                    </div>
+                    <div class="message-content">
+                        ${knowledgeHTML}
+                    </div>
+                </div>
+            `;
+
+            resultsEl.insertAdjacentHTML('beforeend', aiMessageHTML);
+            resultsEl.scrollTop = resultsEl.scrollHeight;
+        }
+
+        // 切换知识块
+        function toggleKnowledgeItem(header) {
+            const item = header.parentElement;
+            item.classList.toggle('expanded');
+        }
+
+        // 使用选中的知识生成回答
+        async function generateAnswerWithSelected(selectedKBsStr) {
+            const selectedKBs = selectedKBsStr.split(',');
+            const checkboxes = document.querySelectorAll('.kb-checkbox:checked');
+            const selectedKnowledge = [];
+
+            checkboxes.forEach(checkbox => {
+                const index = checkbox.dataset.index;
+                const item = checkbox.closest('.knowledge-item');
+                const content = item.querySelector('.knowledge-text').textContent;
+                const source = item.querySelector('.knowledge-source').textContent.trim();
+                selectedKnowledge.push({ index: parseInt(index), content, source });
+            });
+
+            if (selectedKnowledge.length === 0) {
+                showAlert('请至少选择一个知识块', 'error');
+                return;
+            }
+
+            const resultsEl = document.getElementById('chatResults');
+            const loadingMessageHTML = `
+                <div class="chat-message ai">
+                    <div class="message-avatar ai">
+                        <i class="fas fa-robot"></i>
+                    </div>
+                    <div class="message-content">
+                        <div style="display: flex; align-items: center; gap: 12px; padding: 8px 0;">
+                            <div class="loading-spinner dark"></div>
+                            <span>正在智能生成回答...</span>
+                        </div>
+                    </div>
+                </div>
+            `;
+
+            resultsEl.insertAdjacentHTML('beforeend', loadingMessageHTML);
+            resultsEl.scrollTop = resultsEl.scrollHeight;
+
+            try {
+                const response = await fetch('/chat', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        question: currentQuestion,
+                        selected_kbs: selectedKBs,
+                        selected_knowledge: selectedKnowledge
+                    })
+                });
+
+                const data = await response.json();
+
+                const loadingMessage = resultsEl.lastElementChild;
+                if (loadingMessage && loadingMessage.querySelector('.loading-spinner')) {
+                    loadingMessage.remove();
+                }
+
+                // 添加到历史
+                chatHistory.unshift({ question: currentQuestion, time: new Date() });
+                if (chatHistory.length > 10) chatHistory.pop();
+                renderHistory();
+
+                const finalAnswerHTML = `
+                    <div class="chat-message ai">
+                        <div class="message-avatar ai">
+                            <i class="fas fa-robot"></i>
+                        </div>
+                        <div class="message-content">
+                            <div class="answer-box">
+                                ${renderMarkdown(data.final_answer || '生成回答失败')}
+                                <div style="margin-top: 16px; display: flex; gap: 10px;">
+                                    <button class="btn btn-sm btn-light" onclick="copyAnswer()">
+                                        <i class="fas fa-copy"></i> 复制回答
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                `;
+
+                resultsEl.insertAdjacentHTML('beforeend', finalAnswerHTML);
+                resultsEl.scrollTop = resultsEl.scrollHeight;
+            } catch (error) {
+                const loadingMessage = resultsEl.lastElementChild;
+                if (loadingMessage && loadingMessage.querySelector('.loading-spinner')) {
+                    loadingMessage.remove();
+                }
+                addMessageToChat(`请求失败: ${error.message}`, 'ai', true);
+            }
+        }
+
+        // 渲染Markdown
+        function renderMarkdown(text) {
+            if (!text) return '';
+            text = escapeHtml(text);
+            text = text.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
+            text = text.replace(/^• (.*$)/gm, '<li>$1</li>');
+            text = text.replace(/^(\d+)\. (.*$)/gm, '<li>$2</li>');
+            if (text.includes('<li>')) {
+                text = text.replace(/(<li>.*?<\/li>)/gs, '<ul>$1</ul>');
+            }
+            text = text.replace(/\n/g, '<br>');
+            return text;
+        }
+
+        // 转义HTML
+        function escapeHtml(text) {
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        }
+
+        // 复制回答
+        function copyAnswer() {
+            const answerContents = document.querySelectorAll('.answer-content');
+            if (answerContents.length > 0) {
+                const text = answerContents[answerContents.length - 1].innerText;
+                navigator.clipboard.writeText(text).then(() => {
+                    showAlert('回答已复制到剪贴板', 'success');
+                }).catch(() => {
+                    showAlert('复制失败', 'error');
+                });
+            }
+        }
+
+        // 清空聊天（保留为内部函数）
+        function clearChat() {
+            const resultsEl = document.getElementById('chatResults');
+            resultsEl.innerHTML = `
+                <div class="empty-state">
+                    <i class="fas fa-robot"></i>
+                    <p>请先在左侧选择知识库，然后输入您的问题</p>
+                </div>
+            `;
+            document.getElementById('questionInput').value = '';
+        }
+
+        // 新建对话
+        function newChat() {
+            if (selectedKBs.size === 0) {
+                showAlert('请先在左侧选择知识库', 'error');
+                return;
+            }
+            clearChat();
+        }
+
+        // 清空问题
+        function clearQuestion() {
+            document.getElementById('questionInput').value = '';
+        }
+
+        // 回车处理
+        function handleEnter(event) {
+            if (event.key === 'Enter') {
+                askQuestion();
+            }
+        }
+
+        // 显示提示
+        function showAlert(message, type) {
+            const alertBox = document.getElementById('alertBox');
+            const icons = { success: 'fa-check-circle', error: 'fa-times-circle', info: 'fa-info-circle' };
+            alertBox.className = `alert alert-${type} show`;
+            alertBox.innerHTML = `<i class="fas ${icons[type]}"></i> ${message}`;
+
+            setTimeout(() => {
+                alertBox.classList.remove('show');
+            }, 3500);
+        }
+
+        // 渲染历史记录
+        function renderHistory() {
+            const historyEl = document.getElementById('historyList');
+
+            if (chatHistory.length === 0) {
+                historyEl.innerHTML = `
+                    <div class="empty-state" style="padding: 30px;">
+                        <i class="fas fa-clock"></i>
+                        <p>暂无历史记录</p>
+                    </div>
+                `;
+                return;
+            }
+
+            historyEl.innerHTML = chatHistory.map(item => `
+                <div class="history-item" onclick="loadHistoryQuestion('${item.question}')">
+                    <div class="history-item-question">${item.question}</div>
+                    <div class="history-item-time">${item.time.toLocaleString()}</div>
+                </div>
+            `).join('');
+        }
+
+        // 加载历史问题
+        function loadHistoryQuestion(question) {
+            document.getElementById('questionInput').value = question;
+            currentQuestion = question;
+            askQuestion();
+        }
+
+        // 显示帮助
+        function showHelp() {
+            alert('使用指南：\n1. 创建知识库\n2. 上传文档\n3. 构建向量库\n4. 选择知识库并提问', 'info');
+        }
+
+        // 显示关于
+        function showAbout() {
+            alert('智慧知识库问答系统 v1.0\n学校专用智能问答平台', 'info');
+        }
+    </script>
+</body>
+</html>
