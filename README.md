@@ -4,7 +4,7 @@
 
 ## 在线预览
 
-🔗 **在线预览地址**: https://huomingyao.github.io/personal_rag/
+🔗 **在线预览地址**: https://huomingyao.github.io/personal_rag/templates/index_new.html
 
 > 部署在GitHub Pages上的HTML预览
 
