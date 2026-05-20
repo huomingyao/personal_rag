@@ -4,9 +4,9 @@
 
 ## 在线预览
 
-🔗 **在线预览地址**: http://120.26.181.211:5000
+🔗 **在线预览地址**: https://huomingyao.github.io/personal_rag/
 
-> 注意：由于服务器资源有限，服务可能不稳定
+> 部署在GitHub Pages上的HTML预览
 
 ## 功能简介
 
