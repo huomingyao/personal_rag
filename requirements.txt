@@ -1,0 +1,12 @@
+flask
+langchain-community
+langchain-huggingface
+langchain-text-splitters
+langchain-core
+pymupdf
+python-docx
+openai
+duckduckgo-search
+gevent
+faiss-cpu
+faiss-gpu

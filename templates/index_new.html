@@ -3,2248 +3,2618 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>智慧知识库 | 智能问答系统</title>
-    <link rel="stylesheet" href="https://cdn.bootcdn.net/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <title>智识库 - 多知识库问答系统</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
     <style>
         :root {
-            /* 🔥 浅蓝色主题 */
-            --primary: #4A90E2;
-            --primary-light: #7AB3F0;
-            --primary-dark: #357ABD;
-            --primary-lighter: #E8F4FD;
-            --secondary: #50C878;
-            --success: #50C878;
-            --error: #E74C3C;
-            --warning: #F5A623;
-            --bg-light: #F5F9FC;
-            --bg-white: #ffffff;
-            --bg-blue-light: #EEF5FE;
-            --text-main: #2C3E50;
-            --text-secondary: #5D6D7E;
-            --text-muted: #95A5A6;
-            --text-placeholder: #BDC3C7;
-            --border-light: #D5E4F1;
-            --border-hover: #B8D0E8;
-            --shadow-sm: 0 2px 6px rgba(74, 144, 226, 0.08);
-            --shadow-md: 0 4px 12px rgba(74, 144, 226, 0.12);
-            --shadow-lg: 0 8px 25px rgba(74, 144, 226, 0.18);
-            --shadow-primary: 0 4px 20px rgba(74, 144, 226, 0.25);
-            --radius-sm: 8px;
-            --radius-md: 12px;
+            --primary: #4A90D9;
+            --primary-light: #E8F2FC;
+            --primary-dark: #2E6BA8;
+            --primary-soft: #B8D4F0;
+            --accent: #5BA3E8;
+            --bg: #F5F9FD;
+            --bg-card: #FFFFFF;
+            --bg-elevated: #FFFFFF;
+            --text-primary: #1A2332;
+            --text-secondary: #5A6B7D;
+            --text-tertiary: #8A9BAE;
+            --border: #D6E4F0;
+            --border-light: #E8F0F8;
+            --success: #4CAF7A;
+            --success-bg: #E8F5EC;
+            --warning: #E8A838;
+            --warning-bg: #FDF6E8;
+            --error: #D9534F;
+            --error-bg: #FDEBEB;
+            --shadow-sm: 0 1px 3px rgba(74, 144, 217, 0.08);
+            --shadow-md: 0 4px 20px rgba(74, 144, 217, 0.12);
+            --shadow-lg: 0 8px 40px rgba(74, 144, 217, 0.15);
+            --radius-sm: 6px;
+            --radius-md: 10px;
             --radius-lg: 16px;
             --radius-xl: 24px;
-            --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-            --sidebar-width: 260px;
-            --header-height: 64px;
         }
 
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: 'Noto Sans SC', 'PingFang SC', 'Microsoft YaHei', Arial, sans-serif;
-        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
 
         body {
-            min-height: 100vh;
-            background-color: var(--bg-light);
-            color: var(--text-main);
+            font-family: 'Noto Sans SC', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: var(--bg);
+            color: var(--text-primary);
             line-height: 1.6;
+            overflow-x: hidden;
         }
 
-        /* 顶部导航 - 浅蓝色主题 */
-        .top-nav {
-            height: var(--header-height);
-            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
-            display: flex;
-            align-items: center;
-            padding: 0 32px;
-            box-shadow: var(--shadow-md);
-            position: sticky;
-            top: 0;
-            z-index: 100;
-        }
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: var(--primary-soft); border-radius: 3px; }
+        ::-webkit-scrollbar-thumb:hover { background: var(--primary); }
 
-        .top-nav h1 {
-            font-size: 22px;
-            font-weight: 700;
-            color: white;
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            letter-spacing: 0.5px;
-        }
+        .app { display: flex; min-height: 100vh; }
 
-        .top-nav h1 i {
-            font-size: 26px;
-        }
-
-        .top-nav .subtitle {
-            font-size: 13px;
-            color: rgba(255,255,255,0.85);
-            margin-left: 16px;
-            padding-left: 16px;
-            border-left: 1px solid rgba(255,255,255,0.25);
-        }
-
-        .header-actions {
-            margin-left: auto;
-            display: flex;
-            align-items: center;
-            gap: 12px;
-        }
-
-        .header-actions .btn-help {
-            background: rgba(255,255,255,0.15);
-            color: white;
-            border: none;
-            padding: 8px 16px;
-            border-radius: 20px;
-            font-size: 13px;
-            cursor: pointer;
-            transition: var(--transition);
-        }
-
-        .header-actions .btn-help:hover {
-            background: rgba(255,255,255,0.25);
-        }
-
-        /* 主容器 */
-        .container {
-            display: flex;
-            max-width: 1600px;
-            margin: 0 auto;
-            padding: 24px;
-            gap: 24px;
-        }
-
-        /* 侧边栏 */
-        .sidebar-nav {
-            width: var(--sidebar-width);
-            background: var(--bg-white);
-            border-radius: var(--radius-lg);
-            box-shadow: var(--shadow-sm);
-            padding: 20px 16px;
+        /* Sidebar */
+        .sidebar {
+            width: 280px;
+            background: var(--bg-card);
+            border-right: 1px solid var(--border-light);
             display: flex;
             flex-direction: column;
-            height: fit-content;
-            position: sticky;
-            top: calc(var(--header-height) + 24px);
+            position: fixed;
+            height: 100vh;
+            z-index: 100;
+            transition: transform 0.3s ease;
         }
 
-        .sidebar-logo {
+        .sidebar-header {
+            padding: 24px 20px;
+            border-bottom: 1px solid var(--border-light);
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .logo-icon {
+            width: 40px;
+            height: 40px;
+            background: linear-gradient(135deg, var(--primary), var(--accent));
+            border-radius: var(--radius-md);
             display: flex;
             align-items: center;
             justify-content: center;
-            padding: 8px 12px 24px;
-            border-bottom: 1px solid var(--border-light);
-            margin-bottom: 16px;
-        }
-
-        .sidebar-logo i {
-            font-size: 32px;
-            color: var(--primary);
-            margin-right: 10px;
-        }
-
-        .sidebar-logo span {
-            font-size: 18px;
+            color: white;
+            font-size: 20px;
             font-weight: 700;
-            color: var(--primary-dark);
+            box-shadow: var(--shadow-sm);
         }
 
-        .nav-section {
+        .logo-text {
+            font-size: 20px;
+            font-weight: 700;
+            color: var(--text-primary);
+            letter-spacing: -0.5px;
+        }
+
+        .logo-sub {
+            font-size: 11px;
+            color: var(--text-tertiary);
+            font-weight: 400;
+            letter-spacing: 1px;
+        }
+
+        .sidebar-nav {
+            flex: 1;
+            padding: 16px 12px;
+            overflow-y: auto;
+        }
+
+        .nav-section { margin-bottom: 24px; }
+
+        .nav-label {
+            font-size: 10px;
+            font-weight: 600;
+            color: var(--text-tertiary);
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            padding: 0 12px;
             margin-bottom: 8px;
         }
 
-        .nav-section-title {
-            font-size: 11px;
-            font-weight: 600;
-            color: var(--text-muted);
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            padding: 12px 12px 8px;
-        }
-
         .nav-item {
-            padding: 14px 16px;
-            border: none;
-            background: transparent;
-            color: var(--text-secondary);
-            font-size: 15px;
-            font-weight: 500;
-            cursor: pointer;
-            transition: var(--transition);
             display: flex;
             align-items: center;
             gap: 12px;
-            border-radius: var(--radius-md);
-            margin-bottom: 4px;
+            padding: 10px 14px;
+            border-radius: var(--radius-sm);
+            cursor: pointer;
+            transition: all 0.2s ease;
+            color: var(--text-secondary);
+            font-size: 14px;
+            font-weight: 500;
+            margin-bottom: 2px;
+        }
+
+        .nav-item:hover {
+            background: var(--primary-light);
+            color: var(--primary-dark);
+        }
+
+        .nav-item.active {
+            background: var(--primary-light);
+            color: var(--primary);
+            font-weight: 600;
+        }
+
+        .nav-item svg {
+            width: 18px;
+            height: 18px;
+            flex-shrink: 0;
+        }
+
+        .nav-badge {
+            margin-left: auto;
+            background: var(--primary-light);
+            color: var(--primary);
+            font-size: 11px;
+            font-weight: 600;
+            padding: 2px 8px;
+            border-radius: 20px;
+        }
+
+        .sidebar-footer {
+            padding: 16px;
+            border-top: 1px solid var(--border-light);
+        }
+
+        .status-indicator {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 12px;
+            color: var(--text-tertiary);
+        }
+
+        .status-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: var(--success);
+            box-shadow: 0 0 0 3px var(--success-bg);
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+
+        /* Main Content */
+        .main {
+            flex: 1;
+            margin-left: 280px;
+            min-height: 100vh;
+        }
+
+        /* Top Bar */
+        .topbar {
+            height: 64px;
+            background: var(--bg-card);
+            border-bottom: 1px solid var(--border-light);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 32px;
+            position: sticky;
+            top: 0;
+            z-index: 50;
+        }
+
+        .topbar-left {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .page-title {
+            font-size: 20px;
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+
+        .topbar-right {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            padding: 8px 18px;
+            border-radius: var(--radius-sm);
+            font-size: 13px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            border: none;
+            outline: none;
+            font-family: inherit;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--primary), var(--accent));
+            color: white;
+            box-shadow: 0 2px 8px rgba(74, 144, 217, 0.3);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 16px rgba(74, 144, 217, 0.4);
+        }
+
+        .btn-secondary {
+            background: var(--bg);
+            color: var(--text-secondary);
+            border: 1px solid var(--border);
+        }
+
+        .btn-secondary:hover {
+            background: var(--primary-light);
+            border-color: var(--primary-soft);
+            color: var(--primary);
+        }
+
+        .btn-ghost {
+            background: transparent;
+            color: var(--text-secondary);
+            padding: 8px 12px;
+        }
+
+        .btn-ghost:hover {
+            background: var(--primary-light);
+            color: var(--primary);
+        }
+
+        .btn-sm { padding: 6px 12px; font-size: 12px; }
+        .btn-icon { padding: 8px; width: 36px; height: 36px; }
+
+        /* Content Area */
+        .content { padding: 32px; max-width: 1400px; }
+
+        /* Hero Section */
+        .hero {
+            background: linear-gradient(135deg, var(--primary-light) 0%, #FFFFFF 100%);
+            border: 1px solid var(--border-light);
+            border-radius: var(--radius-lg);
+            padding: 48px;
+            margin-bottom: 32px;
             position: relative;
             overflow: hidden;
         }
 
-        .nav-item::before {
+        .hero::before {
             content: '';
             position: absolute;
-            left: 0;
+            top: -50%;
+            right: -20%;
+            width: 500px;
+            height: 500px;
+            background: radial-gradient(circle, rgba(74, 144, 217, 0.08) 0%, transparent 70%);
+            border-radius: 50%;
+        }
+
+        .hero-content {
+            position: relative;
+            z-index: 1;
+            max-width: 600px;
+        }
+
+        .hero-label {
+            font-size: 11px;
+            font-weight: 600;
+            color: var(--primary);
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            margin-bottom: 16px;
+        }
+
+        .hero-title {
+            font-size: 36px;
+            font-weight: 700;
+            color: var(--text-primary);
+            line-height: 1.3;
+            margin-bottom: 16px;
+            letter-spacing: -1px;
+        }
+
+        .hero-desc {
+            font-size: 15px;
+            color: var(--text-secondary);
+            line-height: 1.8;
+            margin-bottom: 28px;
+        }
+
+        .hero-actions {
+            display: flex;
+            gap: 12px;
+        }
+
+        /* Stats Bar */
+        .stats-bar {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 20px;
+            margin-bottom: 32px;
+        }
+
+        .stat-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-light);
+            border-radius: var(--radius-md);
+            padding: 24px;
+            transition: all 0.3s ease;
+        }
+
+        .stat-card:hover {
+            box-shadow: var(--shadow-md);
+            transform: translateY(-2px);
+        }
+
+        .stat-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: var(--radius-sm);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 16px;
+            font-size: 20px;
+        }
+
+        .stat-icon.blue { background: var(--primary-light); color: var(--primary); }
+        .stat-icon.green { background: var(--success-bg); color: var(--success); }
+        .stat-icon.orange { background: var(--warning-bg); color: var(--warning); }
+        .stat-icon.purple { background: #F0E8FD; color: #7B5CD6; }
+
+        .stat-value {
+            font-size: 28px;
+            font-weight: 700;
+            color: var(--text-primary);
+            margin-bottom: 4px;
+        }
+
+        .stat-label {
+            font-size: 13px;
+            color: var(--text-tertiary);
+        }
+
+        /* Section Header */
+        .section-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 20px;
+        }
+
+        .section-title {
+            font-size: 18px;
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+
+        .section-subtitle {
+            font-size: 13px;
+            color: var(--text-tertiary);
+            margin-top: 2px;
+        }
+
+        /* Cards Grid */
+        .cards-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+            gap: 20px;
+            margin-bottom: 32px;
+        }
+
+        .card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-light);
+            border-radius: var(--radius-md);
+            overflow: hidden;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .card:hover {
+            box-shadow: var(--shadow-md);
+            transform: translateY(-2px);
+        }
+
+        .card-header {
+            padding: 20px 20px 0;
+            display: flex;
+            align-items: flex-start;
+            justify-content: space-between;
+        }
+
+        .card-icon {
+            width: 44px;
+            height: 44px;
+            border-radius: var(--radius-sm);
+            background: var(--primary-light);
+            color: var(--primary);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+        }
+
+        .card-menu {
+            color: var(--text-tertiary);
+            cursor: pointer;
+            padding: 4px;
+            border-radius: 4px;
+        }
+
+        .card-menu:hover {
+            background: var(--bg);
+            color: var(--text-primary);
+        }
+
+        .card-body {
+            padding: 16px 20px;
+        }
+
+        .card-title {
+            font-size: 15px;
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: 6px;
+        }
+
+        .card-desc {
+            font-size: 13px;
+            color: var(--text-tertiary);
+            line-height: 1.6;
+        }
+
+        .card-footer {
+            padding: 12px 20px;
+            border-top: 1px solid var(--border-light);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .card-meta {
+            font-size: 12px;
+            color: var(--text-tertiary);
+        }
+
+        .card-status {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 12px;
+            font-weight: 500;
+            padding: 4px 10px;
+            border-radius: 20px;
+        }
+
+        .status-built {
+            background: var(--success-bg);
+            color: var(--success);
+        }
+
+        .status-pending {
+            background: var(--warning-bg);
+            color: var(--warning);
+        }
+
+        /* Chat Interface */
+        .chat-container {
+            display: flex;
+            gap: 24px;
+            height: calc(100vh - 64px);
+        }
+
+        .chat-sidebar {
+            width: 280px;
+            background: var(--bg-card);
+            border-right: 1px solid var(--border-light);
+            display: flex;
+            flex-direction: column;
+        }
+
+        .chat-sidebar-header {
+            padding: 20px;
+            border-bottom: 1px solid var(--border-light);
+        }
+
+        .chat-list {
+            flex: 1;
+            overflow-y: auto;
+            padding: 8px;
+        }
+
+        .chat-item {
+            padding: 12px 14px;
+            border-radius: var(--radius-sm);
+            cursor: pointer;
+            transition: all 0.2s ease;
+            margin-bottom: 2px;
+            position: relative;
+        }
+
+        .chat-item:hover {
+            background: var(--primary-light);
+        }
+
+        .chat-item.active {
+            background: var(--primary-light);
+        }
+
+        .chat-item-title {
+            font-size: 13px;
+            font-weight: 500;
+            color: var(--text-primary);
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .chat-item-actions {
+            display: none;
+            position: absolute;
+            right: 8px;
             top: 50%;
             transform: translateY(-50%);
-            width: 3px;
-            height: 0;
-            background: var(--primary);
-            border-radius: 0 2px 2px 0;
-            transition: var(--transition);
+            gap: 4px;
         }
-
-        .nav-item:hover {
-            background: var(--primary-lighter);
+        .chat-item:hover .chat-item-actions {
+            display: flex;
+        }
+        .chat-item {
+            position: relative;
+        }
+        .chat-item-edit {
+            padding: 4px;
+            border-radius: 4px;
+            color: var(--text-tertiary);
+            cursor: pointer;
+        }
+        .chat-item-edit:hover {
+            background: var(--bg);
             color: var(--primary);
         }
 
-        .nav-item.active {
-            background: var(--primary-lighter);
+        .chat-main {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            background: var(--bg);
+        }
+
+        .chat-messages {
+            flex: 1;
+            overflow-y: auto;
+            padding: 24px 32px;
+        }
+
+        .message {
+            max-width: 80%;
+            margin-bottom: 20px;
+            animation: fadeInUp 0.3s ease;
+        }
+
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .message-user { margin-left: auto; }
+
+        .message-bubble {
+            padding: 14px 18px;
+            border-radius: var(--radius-md);
+            font-size: 14px;
+            line-height: 1.7;
+        }
+
+        .message-user .message-bubble {
+            background: linear-gradient(135deg, var(--primary), var(--accent));
+            color: white;
+            border-bottom-right-radius: 4px;
+        }
+
+        .message-assistant .message-bubble {
+            background: var(--bg-card);
+            border: 1px solid var(--border-light);
+            color: var(--text-primary);
+            border-bottom-left-radius: 4px;
+        }
+
+        .message-meta {
+            font-size: 11px;
+            color: var(--text-tertiary);
+            margin-top: 6px;
+            padding: 0 4px;
+        }
+
+        .message-user .message-meta { text-align: right; }
+
+        .thinking-box {
+            background: linear-gradient(135deg, #FFF9E6 0%, #FFF3D0 100%);
+            border-left: 3px solid var(--warning);
+            padding: 12px 16px;
+            border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+            margin-bottom: 14px;
+            font-size: 13px;
+            color: var(--text-secondary);
+        }
+        .thinking-label {
+            font-size: 11px;
+            font-weight: 600;
+            color: var(--warning);
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .knowledge-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 6px;
+            margin-top: 12px;
+        }
+
+        .knowledge-tag {
+            font-size: 11px;
+            padding: 3px 10px;
+            border-radius: 20px;
+            background: var(--primary-light);
+            color: var(--primary);
+            font-weight: 500;
+        }
+
+        .chat-input-area {
+            padding: 20px 32px;
+            background: var(--bg-card);
+            border-top: 1px solid var(--border-light);
+        }
+
+        .chat-input-wrapper {
+            display: flex;
+            gap: 12px;
+            align-items: flex-end;
+        }
+
+        .chat-input {
+            flex: 1;
+            background: var(--bg);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-md);
+            padding: 12px 16px;
+            font-size: 14px;
+            font-family: inherit;
+            color: var(--text-primary);
+            resize: none;
+            outline: none;
+            min-height: 48px;
+            max-height: 120px;
+            transition: all 0.2s ease;
+        }
+
+        .chat-input:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(74, 144, 217, 0.1);
+        }
+
+        .chat-input::placeholder { color: var(--text-tertiary); }
+
+        .chat-toolbar {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 12px;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
+        .toolbar-item {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            padding: 6px 12px;
+            border-radius: var(--radius-sm);
+            font-size: 12px;
+            color: var(--text-secondary);
+            cursor: pointer;
+            transition: all 0.2s ease;
+            border: 1px solid var(--border-light);
+            background: var(--bg);
+        }
+
+        .toolbar-item:hover {
+            border-color: var(--primary-soft);
             color: var(--primary);
         }
 
-        .nav-item.active::before {
-            height: 60%;
+        .toolbar-item.active {
+            background: var(--primary-light);
+            border-color: var(--primary-soft);
+            color: var(--primary);
         }
 
-        .nav-item i {
-            width: 20px;
-            text-align: center;
-            font-size: 17px;
-        }
-
-        /* 主内容区 */
-        .main-content {
-            flex: 1;
+        /* Knowledge Chunks Modal */
+        .chunks-modal {
+            position: fixed;
+            inset: 0;
+            background: rgba(26, 35, 50, 0.6);
+            backdrop-filter: blur(4px);
             display: flex;
-            flex-direction: column;
-            gap: 24px;
-            min-width: 0;
+            align-items: center;
+            justify-content: center;
+            z-index: 1100;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease;
         }
-
-        /* 页面容器 */
-        .page-container {
-            display: none;
-            flex: 1;
+        .chunks-modal.active {
+            opacity: 1;
+            visibility: visible;
         }
-
-        .page-container.active {
-            display: flex;
-            flex-direction: column;
-        }
-
-        /* 布局 */
-        .content-layout {
-            display: grid;
-            grid-template-columns: 1fr;
-            gap: 24px;
-            flex: 1;
-            min-height: 0;
-        }
-
-        @media (max-width: 1200px) {
-            .content-layout {
-                grid-template-columns: 1fr;
-            }
-        }
-
-        /* 面板通用样式 */
-        .panel {
-            background: var(--bg-white);
+        .chunks-panel {
+            background: var(--bg-card);
             border-radius: var(--radius-lg);
-            box-shadow: var(--shadow-sm);
+            width: 100%;
+            max-width: 700px;
+            max-height: 85vh;
             overflow: hidden;
+            box-shadow: var(--shadow-lg);
+            transform: scale(0.95) translateY(10px);
+            transition: all 0.3s ease;
+            display: flex;
+            flex-direction: column;
         }
-
-        .panel-header {
+        .chunks-modal.active .chunks-panel {
+            transform: scale(1) translateY(0);
+        }
+        .chunks-header {
             padding: 20px 24px;
             border-bottom: 1px solid var(--border-light);
             display: flex;
             align-items: center;
             justify-content: space-between;
         }
-
-        .panel-header-bar {
-            padding: 16px 24px;
-            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
-            color: white;
-        }
-
-        .panel-header h2 {
+        .chunks-title {
             font-size: 16px;
             font-weight: 600;
+            color: var(--text-primary);
+        }
+        .chunks-question {
+            font-size: 13px;
+            color: var(--text-secondary);
+            margin-top: 4px;
+        }
+        .chunks-body {
+            flex: 1;
+            overflow-y: auto;
+            padding: 16px 24px;
+        }
+        .chunks-list {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+        .chunk-item {
+            border: 1px solid var(--border-light);
+            border-radius: var(--radius-md);
+            overflow: hidden;
+            transition: all 0.2s ease;
+        }
+        .chunk-item:hover {
+            border-color: var(--primary-soft);
+        }
+        .chunk-item.selected {
+            border-color: var(--primary);
+            background: var(--primary-light);
+        }
+        .chunk-header-row {
             display: flex;
             align-items: center;
-            gap: 10px;
+            gap: 12px;
+            padding: 12px 16px;
+            cursor: pointer;
         }
-
-        .panel-header h2 i {
-            font-size: 18px;
-        }
-
-        .panel-body {
-            padding: 24px;
-        }
-
-        /* 🔥 新的横向布局 - 管理页面 */
-        .manage-header-row {
+        .chunk-checkbox {
+            width: 20px;
+            height: 20px;
+            border: 2px solid var(--border);
+            border-radius: 4px;
             display: flex;
-            gap: 24px;
-            margin-bottom: 24px;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s ease;
+            flex-shrink: 0;
+            background: var(--bg);
         }
-
-        .manage-header-row .panel {
+        .chunk-item.selected .chunk-checkbox {
+            background: var(--primary);
+            border-color: var(--primary);
+            color: white;
+        }
+        .chunk-info {
             flex: 1;
         }
-
-        .create-form {
+        .chunk-source {
+            font-size: 12px;
+            font-weight: 600;
+            color: var(--primary);
+        }
+        .chunk-score {
+            font-size: 11px;
+            color: var(--text-tertiary);
+            margin-left: 8px;
+        }
+        .chunk-preview {
+            padding: 0 16px 12px;
+            font-size: 13px;
+            color: var(--text-secondary);
+            line-height: 1.6;
+        }
+        .chunks-footer {
+            padding: 16px 24px;
+            border-top: 1px solid var(--border-light);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        .chunks-info-text {
+            font-size: 13px;
+            color: var(--text-secondary);
+        }
+        .chunks-actions {
             display: flex;
             gap: 12px;
         }
-
-        .create-form input {
-            flex: 1;
-            padding: 14px 18px;
-            border: 2px solid var(--border-light);
-            border-radius: var(--radius-md);
-            font-size: 14px;
-            outline: none;
-            transition: var(--transition);
-            background: var(--bg-light);
-        }
-
-        .create-form input:focus {
-            border-color: var(--primary);
-            background: var(--bg-white);
-            box-shadow: 0 0 0 4px rgba(74, 144,226, 0.1);
-        }
-
-        /* 按钮 */
-        .btn {
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            gap: 8px;
-            background: var(--primary);
-            color: white;
-            border: none;
-            padding: 12px 24px;
-            border-radius: var(--radius-md);
-            cursor: pointer;
-            font-size: 14px;
-            font-weight: 600;
-            transition: var(--transition);
-            white-space: nowrap;
-            box-shadow: 0 2px 8px rgba(74, 144, 226, 0.25);
-        }
-
-        .btn:hover {
-            background: var(--primary-dark);
-            transform: translateY(-2px);
-            box-shadow: var(--shadow-primary);
-        }
-
-        .btn:active {
-            transform: translateY(0);
-        }
-
-        .btn-sm {
-            padding: 8px 14px;
-            font-size: 12px;
-            border-radius: var(--radius-sm);
-        }
-
-        .btn-light {
-            background: var(--bg-light);
+        .chunks-empty {
+            text-align: center;
+            padding: 40px 20px;
             color: var(--text-secondary);
-            border: 1px solid var(--border-light);
-            box-shadow: none;
         }
-
-        .btn-light:hover {
-            background: var(--primary-lighter);
-            color: var(--primary);
-            box-shadow: none;
-        }
-
-        .btn-success {
-            background: var(--success);
-            box-shadow: 0 2px 8px rgba(80, 200, 120, 0.25);
-        }
-
-        .btn-success:hover {
-            background: #3CB371;
-            box-shadow: 0 4px 12px rgba(80, 200, 120, 0.3);
-        }
-
-        .btn-danger {
-            background: var(--error);
-            box-shadow: 0 2px 8px rgba(231, 76, 60, 0.25);
-        }
-
-        .btn-danger:hover {
-            background: #C0392B;
-        }
-
-        .btn:disabled {
-            opacity: 0.5;
-            cursor: not-allowed;
-            transform: none;
-        }
-
-        /* 统计卡片行 */
-        .stats-row {
-            display: flex;
-            gap: 16px;
-            margin-bottom: 24px;
-        }
-
-        .stat-card {
-            flex: 1;
-            padding: 20px;
-            background: var(--bg-white);
-            border-radius: var(--radius-lg);
-            box-shadow: var(--shadow-sm);
-            display: flex;
-            align-items: center;
-            gap: 16px;
-            border: 1px solid var(--border-light);
-        }
-
-        .stat-card:hover {
-            border-color: var(--primary-light);
-            box-shadow: var(--shadow-md);
-        }
-
-        .stat-icon {
-            width: 52px;
-            height: 52px;
-            border-radius: var(--radius-md);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 24px;
-        }
-
-        .stat-icon.blue {
-            background: linear-gradient(135deg, var(--primary-lighter), var(--bg-white));
-            color: var(--primary);
-        }
-
-        .stat-icon.green {
-            background: linear-gradient(135deg, rgba(80, 200, 120, 0.15), var(--bg-white));
-            color: var(--success);
-        }
-
-        .stat-icon.orange {
-            background: linear-gradient(135deg, rgba(245, 166, 35, 0.15), var(--bg-white));
-            color: var(--warning);
-        }
-
-        .stat-info h3 {
-            font-size: 26px;
-            font-weight: 700;
-            color: var(--text-main);
-            line-height: 1;
-        }
-
-        .stat-info p {
-            font-size: 13px;
-            color: var(--text-muted);
-            margin-top: 4px;
-        }
-
-        /* 知识库网格 */
-        .kb-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-            gap: 16px;
-            max-height: 450px;
-            overflow-y: auto;
-            padding-right: 8px;
-        }
-
-        .kb-grid::-webkit-scrollbar {
-            width: 6px;
-        }
-
-        .kb-grid::-webkit-scrollbar-track {
-            background: var(--bg-light);
-            border-radius: 3px;
-        }
-
-        .kb-grid::-webkit-scrollbar-thumb {
-            background: var(--border-hover);
-            border-radius: 3px;
-        }
-
-        .kb-card {
-            border: 2px solid var(--border-light);
-            border-radius: var(--radius-lg);
-            padding: 18px;
-            cursor: pointer;
-            transition: var(--transition);
-            position: relative;
-            background: var(--bg-white);
-            display: flex;
-            flex-direction: column;
-        }
-
-        .kb-card:hover {
-            border-color: var(--primary-light);
-            box-shadow: var(--shadow-md);
-            transform: translateY(-2px);
-        }
-
-        .kb-card.active {
-            border-color: var(--primary);
-            background: linear-gradient(135deg, var(--primary-lighter), var(--bg-white));
-            box-shadow: 0 0 0 2px rgba(74, 144, 226, 0.1);
-        }
-
-        .kb-card.built {
-            border-left: 4px solid var(--success);
-        }
-
-        .kb-card.unbuilt {
-            border-left: 4px solid var(--warning);
-        }
-
-        .kb-card-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: flex-start;
-            margin-bottom: 10px;
-        }
-
-        .kb-name {
-            font-weight: 700;
-            font-size: 15px;
-            color: var(--text-main);
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            line-height: 1.3;
-        }
-
-        .kb-name i {
-            font-size: 18px;
-            color: var(--primary);
-        }
-
-        .kb-status-tag {
-            padding: 4px 10px;
-            border-radius: 20px;
-            font-size: 12px;
-            font-weight: 600;
-            flex-shrink: 0;
-        }
-
-        .kb-status-tag.built {
-            background: rgba(80, 200, 120, 0.15);
-            color: var(--success);
-        }
-
-        .kb-status-tag.unbuilt {
-            background: rgba(245, 166, 35, 0.15);
-            color: var(--warning);
-        }
-
-        .kb-meta {
-            font-size: 13px;
-            color: var(--text-muted);
+        .chunks-empty-icon {
+            font-size: 36px;
             margin-bottom: 12px;
+            opacity: 0.5;
+        }
+        .modal-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(26, 35, 50, 0.5);
+            backdrop-filter: blur(4px);
             display: flex;
             align-items: center;
-            gap: 16px;
+            justify-content: center;
+            z-index: 1200;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease;
         }
 
-        .kb-meta-item {
-            display: flex;
-            align-items: center;
-            gap: 6px;
+        .modal-overlay.active {
+            opacity: 1;
+            visibility: visible;
         }
 
-        .kb-actions {
-            display: flex;
-            gap: 8px;
-            margin-top: auto;
-            flex-wrap: wrap;
+        .modal {
+            background: var(--bg-card);
+            border-radius: var(--radius-lg);
+            width: 100%;
+            max-width: 520px;
+            max-height: 90vh;
+            overflow: hidden;
+            box-shadow: var(--shadow-lg);
+            transform: scale(0.95) translateY(10px);
+            transition: all 0.3s ease;
         }
 
-        .kb-actions .btn {
-            flex: 1;
-            min-width: 65px;
+        .modal-overlay.active .modal {
+            transform: scale(1) translateY(0);
         }
 
-        /* 文件列表 */
-        .file-list {
-            margin-top: 12px;
-            padding-top: 12px;
-            border-top: 1px solid var(--border-light);
-            display: none;
-            max-height: 150px;
+        .modal-header { padding: 24px 24px 0; }
+        .modal-title { font-size: 18px; font-weight: 600; color: var(--text-primary); }
+        .modal-body {
+            padding: 20px 24px;
             overflow-y: auto;
+            max-height: 60vh;
         }
-
-        .file-list.show {
-            display: block;
-            animation: slideDown 0.3s ease;
-        }
-
-        @keyframes slideDown {
-            from { opacity: 0; transform: translateY(-10px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-
-        .file-item {
+        .modal-footer {
+            padding: 16px 24px 24px;
             display: flex;
-            align-items: center;
-            gap: 8px;
-            padding: 8px 10px;
-            font-size: 13px;
-            color: var(--text-secondary);
-            border-radius: var(--radius-sm);
-            transition: var(--transition);
+            justify-content: flex-end;
+            gap: 12px;
         }
 
-        .file-item:hover {
-            background: var(--bg-light);
-        }
-
-        .file-item i {
-            color: var(--primary);
-            font-size: 14px;
-        }
-
-        .file-item .file-size {
-            margin-left: auto;
-            color: var(--text-muted);
-            font-size: 12px;
-        }
-
-        .file-empty {
-            text-align: center;
-            padding: 20px;
-            color: var(--text-placeholder);
-            font-size: 13px;
-        }
-
-        /* 上传区域 */
-        .upload-area {
-            border: 2px dashed var(--border-light);
-            border-radius: var(--radius-md);
-            padding: 20px 16px;
-            text-align: center;
-            cursor: pointer;
-            transition: var(--transition);
-            margin: 12px 16px;
-            background: var(--bg-light);
-            max-width: 340px;
-        }
-
-        .upload-area:hover {
-            border-color: var(--primary);
-            background: var(--primary-lighter);
-        }
-
-        .upload-area.dragover {
-            border-color: var(--primary);
-            background: var(--primary-lighter);
-            border-style: solid;
-            transform: scale(1.01);
-        }
-
-        .upload-area i {
-            font-size: 38px;
-            color: var(--primary);
-            margin-bottom: 10px;
+        /* Form Elements */
+        .form-group { margin-bottom: 20px; }
+        .form-label {
             display: block;
+            font-size: 13px;
+            font-weight: 500;
+            color: var(--text-primary);
+            margin-bottom: 8px;
         }
-
-        .upload-area p {
-            color: var(--text-secondary);
+        .form-input {
+            width: 100%;
+            padding: 10px 14px;
+            border: 1px solid var(--border);
+            border-radius: var(--radius-sm);
             font-size: 14px;
-            margin: 0;
+            font-family: inherit;
+            color: var(--text-primary);
+            background: var(--bg);
+            outline: none;
+            transition: all 0.2s ease;
         }
-
-        .upload-area .hint {
-            color: var(--text-placeholder);
+        .form-input:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(74, 144, 217, 0.1);
+        }
+        .form-input::placeholder { color: var(--text-tertiary); }
+        .form-hint {
             font-size: 12px;
+            color: var(--text-tertiary);
             margin-top: 6px;
         }
 
-        /* 进度条 */
-        .progress-wrapper {
-            margin-top: 16px;
-            padding: 16px;
-            background: var(--bg-light);
+        /* Upload Zone */
+        .upload-zone {
+            border: 2px dashed var(--border);
             border-radius: var(--radius-md);
-            display: none;
-        }
-
-        .progress-wrapper.show {
-            display: block;
-            animation: fadeIn 0.3s ease;
-        }
-
-        .progress-info {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 10px;
-            font-size: 13px;
-        }
-
-        .progress-message {
-            color: var(--text-secondary);
-            font-weight: 500;
-        }
-
-        .progress-percent {
-            color: var(--primary);
-            font-weight: 700;
-            font-size: 15px;
-        }
-
-        .progress-bar-bg {
-            height: 8px;
-            background: var(--border-light);
-            border-radius: 4px;
-            overflow: hidden;
-        }
-
-        .progress-bar-fill {
-            height: 100%;
-            background: linear-gradient(90deg, var(--primary-light), var(--primary));
-            border-radius: 4px;
-            transition: width 0.3s ease;
-            width: 0%;
-        }
-
-        @keyframes fadeIn {
-            from { opacity: 0; }
-            to { opacity: 1; }
-        }
-
-        /* 提示 */
-        .alert {
-            padding: 12px 16px;
-            border-radius: var(--radius-md);
-            font-size: 14px;
-            margin-top: 16px;
-            display: none;
-            align-items: center;
-            gap: 8px;
-        }
-
-        .alert.show {
-            display: flex;
-            animation: fadeIn 0.3s ease;
-        }
-
-        .alert-success {
-            background: rgba(80, 200, 120, 0.1);
-            color: var(--success);
-            border: 1px solid rgba(80, 200, 120, 0.2);
-        }
-
-        .alert-error {
-            background: rgba(231, 76, 60, 0.1);
-            color: var(--error);
-            border: 1px solid rgba(231, 76, 60, 0.2);
-        }
-
-        .alert-info {
-            background: var(--primary-lighter);
-            color: var(--primary);
-            border: 1px solid rgba(74, 144, 226, 0.2);
-        }
-
-        /* 知识库选择标签 */
-        .kb-tags {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 10px;
-        }
-
-        .kb-tag-item {
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-            padding: 10px 16px;
-            background: var(--bg-light);
-            border: 2px solid transparent;
-            border-radius: 24px;
+            padding: 40px;
+            text-align: center;
             cursor: pointer;
-            transition: var(--transition);
-            font-size: 14px;
-            color: var(--text-secondary);
-            font-weight: 500;
+            transition: all 0.2s ease;
+            background: var(--bg);
         }
-
-        .kb-tag-item:hover:not(.disabled) {
-            background: var(--primary-lighter);
-            color: var(--primary);
-        }
-
-        .kb-tag-item.selected {
-            background: var(--primary-lighter);
+        .upload-zone:hover {
             border-color: var(--primary);
-            color: var(--primary-dark);
-            font-weight: 600;
+            background: var(--primary-light);
         }
-
-        .kb-tag-item.disabled {
-            opacity: 0.5;
-            cursor: not-allowed;
+        .upload-zone.dragover {
+            border-color: var(--primary);
+            background: var(--primary-light);
         }
+        .upload-icon { font-size: 36px; margin-bottom: 12px; }
+        .upload-text { font-size: 14px; color: var(--text-secondary); margin-bottom: 4px; }
+        .upload-hint { font-size: 12px; color: var(--text-tertiary); }
 
-        .kb-tag-item .check-icon {
-            display: none;
-        }
-
-        .kb-tag-item.selected .check-icon {
-            display: inline;
-        }
-
-        .kb-tag-item.selected .unchecked-icon {
-            display: none;
-        }
-
-        /* 问答面板 */
-        .chat-panel {
-            flex: 1;
-            display: flex;
-            flex-direction: column;
-            min-height: 500px;
-            border-radius: var(--radius-lg);
-            overflow: hidden;
-            background: var(--bg-white);
-            box-shadow: var(--shadow-sm);
-        }
-
-        .chat-header {
-            padding: 18px 24px;
-            border-bottom: 1px solid var(--border-light);
-            background: var(--bg-white);
+        /* File List */
+        .file-list { margin-top: 16px; }
+        .file-item {
             display: flex;
             align-items: center;
-            justify-content: space-between;
+            gap: 12px;
+            padding: 10px 14px;
+            background: var(--bg);
+            border-radius: var(--radius-sm);
+            margin-bottom: 8px;
         }
-
-        .chat-header h2 {
-            font-size: 17px;
-            font-weight: 700;
-            color: var(--text-main);
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-
-        .chat-header h2 i {
-            font-size: 20px;
+        .file-icon {
+            width: 36px;
+            height: 36px;
+            background: var(--primary-light);
             color: var(--primary);
-        }
-
-        .chat-header-actions {
+            border-radius: var(--radius-sm);
             display: flex;
-            gap: 10px;
+            align-items: center;
+            justify-content: center;
+            font-size: 16px;
+        }
+        .file-info { flex: 1; }
+        .file-name { font-size: 13px; font-weight: 500; color: var(--text-primary); }
+        .file-size { font-size: 11px; color: var(--text-tertiary); }
+        .file-actions { display: flex; gap: 4px; }
+
+        /* Progress Bar */
+        .progress-container { margin-top: 16px; }
+        .progress-bar {
+            height: 6px;
+            background: var(--border-light);
+            border-radius: 3px;
+            overflow: hidden;
+        }
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--primary), var(--accent));
+            border-radius: 3px;
+            transition: width 0.3s ease;
+        }
+        .progress-text {
+            font-size: 12px;
+            color: var(--text-tertiary);
+            margin-top: 8px;
+            text-align: center;
         }
 
-        /* 聊天结果 */
-        .chat-results {
-            flex: 1;
-            padding: 24px;
-            overflow-y: auto;
-            background: var(--bg-light);
+        /* Empty State */
+        .empty-state {
+            text-align: center;
+            padding: 60px 20px;
+        }
+        .empty-icon { font-size: 48px; margin-bottom: 16px; opacity: 0.5; }
+        .empty-title { font-size: 16px; font-weight: 600; color: var(--text-primary); margin-bottom: 8px; }
+        .empty-desc { font-size: 14px; color: var(--text-tertiary); }
+
+        /* Toast */
+        .toast-container {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 2000;
             display: flex;
             flex-direction: column;
-            gap: 20px;
+            gap: 8px;
         }
-
-        .chat-message {
+        .toast {
+            background: var(--bg-card);
+            border: 1px solid var(--border-light);
+            border-radius: var(--radius-md);
+            padding: 14px 18px;
+            box-shadow: var(--shadow-lg);
             display: flex;
-            gap: 14px;
-            animation: messageIn 0.4s ease;
+            align-items: center;
+            gap: 12px;
+            min-width: 300px;
+            animation: slideIn 0.3s ease;
+        }
+        @keyframes slideIn {
+            from { transform: translateX(100%); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
+        }
+        .toast-icon { font-size: 20px; }
+        .toast-content { flex: 1; }
+        .toast-title { font-size: 14px; font-weight: 600; color: var(--text-primary); }
+        .toast-message { font-size: 12px; color: var(--text-secondary); margin-top: 2px; }
+        .toast-success { border-left: 3px solid var(--success); }
+        .toast-error { border-left: 3px solid var(--error); }
+        .toast-warning { border-left: 3px solid var(--warning); }
+
+        /* Knowledge Source Tags */
+        .source-list {
+            margin-top: 12px;
+            padding: 12px;
+            background: var(--bg);
+            border-radius: var(--radius-sm);
+        }
+        .source-item {
+            font-size: 12px;
+            color: var(--text-secondary);
+            padding: 6px 0;
+            border-bottom: 1px solid var(--border-light);
+        }
+        .source-item:last-child { border-bottom: none; }
+        .source-badge {
+            display: inline-block;
+            font-size: 10px;
+            font-weight: 600;
+            padding: 2px 8px;
+            border-radius: 4px;
+            background: var(--primary-light);
+            color: var(--primary);
+            margin-right: 8px;
         }
 
-        @keyframes messageIn {
-            from { opacity: 0; transform: translateY(15px); }
+        /* Checkbox */
+        .checkbox-wrapper {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 10px 12px;
+            border-radius: var(--radius-sm);
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+        .checkbox-wrapper:hover { background: var(--primary-light); }
+        .checkbox {
+            width: 18px;
+            height: 18px;
+            border: 2px solid var(--border);
+            border-radius: 4px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s ease;
+            flex-shrink: 0;
+        }
+        .checkbox.checked {
+            background: var(--primary);
+            border-color: var(--primary);
+        }
+        .checkbox-label { font-size: 14px; color: var(--text-primary); }
+
+        /* Page Transitions */
+        .page {
+            display: none;
+            animation: fadeIn 0.3s ease;
+        }
+        .page.active { display: block; }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(8px); }
             to { opacity: 1; transform: translateY(0); }
         }
 
-        .chat-message.user {
-            justify-content: flex-end;
-        }
-
-        .chat-message.ai {
-            justify-content: flex-start;
-        }
-
-        .message-avatar {
-            width: 40px;
-            height: 40px;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 16px;
-            font-weight: 600;
-            flex-shrink: 0;
-        }
-
-        .message-avatar.user {
-            background: var(--primary);
-            color: white;
-        }
-
-        .message-avatar.ai {
-            background: var(--success);
-            color: white;
-        }
-
-        .message-content {
-            max-width: 75%;
-            padding: 14px 18px;
-            border-radius: 18px;
-            font-size: 15px;
-            line-height: 1.7;
-            color: var(--text-main);
-            word-wrap: break-word;
-        }
-
-        .chat-message.user .message-content {
-            background: var(--primary);
-            color: white;
-            border-bottom-right-radius: 6px;
-        }
-
-        .chat-message.ai .message-content {
-            background: var(--bg-white);
-            border: 1px solid var(--border-light);
-            border-bottom-left-radius: 6px;
-        }
-
-        /* 聊天输入 */
-        .chat-input-area {
-            padding: 18px 24px;
-            border-top: 1px solid var(--border-light);
-            background: var(--bg-white);
-        }
-
-        .input-wrapper {
-            display: flex;
-            gap: 14px;
-            align-items: center;
-        }
-
-        .input-wrapper .btn.btn-light {
-            height: 44px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-
-        .input-container {
-            flex: 1;
+        /* Toggle Switch */
+        .toggle {
             position: relative;
+            width: 40px;
+            height: 22px;
         }
-
-        .input-container input {
-            width: 100%;
-            padding: 14px 50px 14px 18px;
-            border: 2px solid var(--border-light);
-            border-radius: 24px;
-            font-size: 15px;
-            outline: none;
-            transition: var(--transition);
-            background: var(--bg-light);
+        .toggle input {
+            opacity: 0;
+            width: 0;
+            height: 0;
         }
-
-        .input-container input:focus {
-            border-color: var(--primary);
-            background: var(--bg-white);
-            box-shadow: 0 0 0 4px rgba(74, 144, 226, 0.1);
-        }
-
-        .input-container .input-actions {
+        .toggle-slider {
             position: absolute;
-            right: 14px;
+            cursor: pointer;
+            inset: 0;
+            background: var(--border);
+            border-radius: 22px;
+            transition: 0.3s;
+        }
+        .toggle-slider:before {
+            content: "";
+            position: absolute;
+            height: 16px;
+            width: 16px;
+            left: 3px;
+            bottom: 3px;
+            background: white;
+            border-radius: 50%;
+            transition: 0.3s;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.2);
+        }
+        .toggle input:checked + .toggle-slider { background: var(--primary); }
+        .toggle input:checked + .toggle-slider:before { transform: translateX(18px); }
+
+        /* Search Box */
+        .search-box { position: relative; }
+        .search-box input {
+            width: 280px;
+            padding: 8px 14px 8px 38px;
+            border: 1px solid var(--border);
+            border-radius: var(--radius-sm);
+            font-size: 13px;
+            font-family: inherit;
+            background: var(--bg);
+            outline: none;
+            transition: all 0.2s ease;
+        }
+        .search-box input:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(74, 144, 217, 0.1);
+            width: 320px;
+        }
+        .search-box svg {
+            position: absolute;
+            left: 12px;
             top: 50%;
             transform: translateY(-50%);
+            color: var(--text-tertiary);
+        }
+
+        /* Knowledge Selector in Chat */
+        .kb-selector {
             display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+        .kb-chip {
+            display: inline-flex;
             align-items: center;
-            gap: 10px;
-        }
-
-        .input-actions button {
-            background: none;
-            border: none;
-            color: var(--text-muted);
+            gap: 6px;
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 500;
             cursor: pointer;
-            padding: 6px;
-            border-radius: 50%;
-            transition: var(--transition);
-            font-size: 16px;
+            transition: all 0.2s ease;
+            border: 1px solid var(--border);
+            background: var(--bg);
+            color: var(--text-secondary);
         }
-
-        .input-actions button:hover {
-            background: var(--border-light);
+        .kb-chip:hover { border-color: var(--primary-soft); }
+        .kb-chip.selected {
+            background: var(--primary-light);
+            border-color: var(--primary);
             color: var(--primary);
         }
+        .kb-chip .check { display: none; }
+        .kb-chip.selected .check { display: inline; }
 
-        /* 加载动画 */
-        .loading-spinner {
-            display: inline-block;
-            width: 18px;
-            height: 18px;
-            border: 3px solid rgba(255, 255, 255, 0.3);
-            border-radius: 50%;
-            border-top-color: white;
-            animation: spin 0.8s linear infinite;
-        }
-
-        .loading-spinner.dark {
-            border-color: var(--border-hover);
-            border-top-color: var(--primary);
-        }
-
-        @keyframes spin {
-            to { transform: rotate(360deg); }
-        }
-
-        /* 空状态 */
-        .empty-state {
-            text-align: center;
-            padding: 50px 20px;
-            color: var(--text-muted);
-            flex: 1;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-        }
-
-        .empty-state i {
-            font-size: 48px;
-            margin-bottom: 16px;
-            opacity: 0.4;
-            color: var(--primary-light);
-        }
-
-        .empty-state p {
-            font-size: 14px;
-        }
-
-        /* 历史记录 */
-        .history-list {
-            max-height: 280px;
-            overflow-y: auto;
-        }
-
-        /* 问答页布局 - 左右分栏 */
-        .query-layout {
-            display: grid;
-            grid-template-columns: 280px 1fr;
-            gap: 24px;
-            flex: 1;
-        }
-
-        /* 左侧面板 */
-        .query-sidebar {
-            display: flex;
-            flex-direction: column;
-            gap: 24px;
-        }
-
-        /* 下拉栏面板 */
-        .dropdown-panel {
-            background: var(--bg-white);
-            border-radius: var(--radius-lg);
-            box-shadow: var(--shadow-sm);
-            overflow: hidden;
-        }
-
-        .dropdown-header {
-            padding: 16px 20px;
-            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
-            color: white;
+        /* Typing Indicator */
+        .typing-indicator {
             display: flex;
             align-items: center;
-            justify-content: space-between;
-            cursor: pointer;
-            transition: var(--transition);
-        }
-
-        .dropdown-header:hover {
-            filter: brightness(1.05);
-        }
-
-        .dropdown-header h2 {
-            font-size: 16px;
-            font-weight: 600;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-
-        .dropdown-header h2 i {
-            font-size: 18px;
-        }
-
-        .dropdown-toggle {
-            font-size: 14px;
-            transition: transform 0.3s ease;
-        }
-
-        .dropdown-panel.collapsed .dropdown-toggle {
-            transform: rotate(-90deg);
-        }
-
-        .dropdown-body {
-            max-height: 600px;
-            overflow-y: auto;
-            transition: max-height 0.3s ease, padding 0.3s ease;
-            display: flex;
-            flex-direction: column;
-        }
-
-        .dropdown-panel.collapsed .dropdown-body {
-            max-height: 0;
-            overflow: hidden;
-        }
-
-        /* 右侧问答下拉栏的内部布局 */
-        .dropdown-panel:has(.chat-results) .dropdown-body {
-            display: flex;
-            flex-direction: column;
-            min-height: 400px;
-            max-height: 70vh;
-        }
-
-        .dropdown-panel:has(.chat-results) .chat-results {
-            flex: 1;
-            overflow-y: auto;
-        }
-
-        .dropdown-panel.collapsed .dropdown-body {
-            max-height: 0;
-            overflow: hidden;
-            padding: 0;
-        }
-
-        .dropdown-panel.collapsed .panel-body {
-            display: none;
-        }
-
-        /* 折叠面板的特殊样式 */
-        .dropdown-panel .panel-body {
-            padding: 20px;
-        }
-
-        /* 左侧下拉栏头部优化 */
-        .query-sidebar .dropdown-header {
+            gap: 4px;
             padding: 14px 18px;
         }
-
-        .query-sidebar .dropdown-header h2 {
-            font-size: 15px;
+        .typing-indicator span {
+            width: 8px;
+            height: 8px;
+            background: var(--primary-soft);
+            border-radius: 50%;
+            animation: typingBounce 1.4s infinite ease-in-out both;
+        }
+        .typing-indicator span:nth-child(1) { animation-delay: -0.32s; }
+        .typing-indicator span:nth-child(2) { animation-delay: -0.16s; }
+        @keyframes typingBounce {
+            0%, 80%, 100% { transform: scale(0.6); opacity: 0.5; }
+            40% { transform: scale(1); opacity: 1; }
         }
 
-        .query-sidebar .dropdown-header h2 i {
-            font-size: 16px;
+        /* Responsive */
+        @media (max-width: 1024px) {
+            .sidebar { transform: translateX(-100%); }
+            .sidebar.open { transform: translateX(0); }
+            .main { margin-left: 0; }
+            .stats-bar { grid-template-columns: repeat(2, 1fr); }
+        }
+        @media (max-width: 768px) {
+            .stats-bar { grid-template-columns: 1fr; }
+            .cards-grid { grid-template-columns: 1fr; }
+            .content { padding: 16px; }
+            .hero { padding: 24px; }
+            .hero-title { font-size: 24px; }
         }
 
-        /* 右侧智能问答下拉栏头部优化 */
-        .query-main .dropdown-header {
-            padding: 14px 20px;
-            display: grid;
-            grid-template-columns: 1fr auto auto;
-            align-items: center;
-            gap: 12px;
+        /* Markdown Content */
+        .markdown-content h1, .markdown-content h2, .markdown-content h3 {
+            margin: 20px 0 12px;
+            color: var(--text-primary);
+            font-weight: 600;
+            line-height: 1.4;
+        }
+        .markdown-content h1 { font-size: 22px; border-bottom: 1px solid var(--border); padding-bottom: 8px; }
+        .markdown-content h2 { font-size: 18px; }
+        .markdown-content h3 { font-size: 16px; }
+        .markdown-content p {
+            margin: 10px 0;
+            line-height: 1.8;
+        }
+        .markdown-content ul, .markdown-content ol {
+            margin: 10px 0;
+            padding-left: 24px;
+        }
+        .markdown-content li {
+            margin: 6px 0;
+            line-height: 1.7;
+        }
+        .markdown-content code {
+            background: var(--primary-light);
+            padding: 3px 8px;
+            border-radius: 4px;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 13px;
+            color: var(--primary-dark);
+        }
+        .markdown-content pre {
+            background: #1E2530;
+            padding: 16px;
+            border-radius: var(--radius-sm);
+            overflow-x: auto;
+            margin: 14px 0;
+        }
+        .markdown-content pre code {
+            background: none;
+            padding: 0;
+            color: #E4E7EA;
+            font-size: 13px;
+            line-height: 1.6;
+        }
+        .markdown-content strong {
+            color: var(--text-primary);
+            font-weight: 600;
+        }
+        .markdown-content blockquote {
+            border-left: 4px solid var(--primary);
+            background: var(--primary-light);
+            padding: 12px 16px;
+            margin: 14px 0;
+            border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+            color: var(--text-secondary);
+        }
+        .markdown-content hr {
+            border: none;
+            border-top: 1px solid var(--border);
+            margin: 20px 0;
+        }
+        .markdown-content table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 14px 0;
+            font-size: 14px;
+        }
+        .markdown-content th, .markdown-content td {
+            border: 1px solid var(--border);
+            padding: 10px 14px;
+            text-align: left;
+        }
+        .markdown-content th {
+            background: var(--primary-light);
+            font-weight: 600;
+            color: var(--primary-dark);
+        }
+        .markdown-content tr:nth-child(even) {
+            background: var(--bg);
+        }
+        .markdown-content a {
+            color: var(--primary);
+            text-decoration: none;
+        }
+        .markdown-content a:hover {
+            text-decoration: underline;
         }
 
-        .query-main .dropdown-header h2 {
+        /* Answer Section Wrapper */
+        .answer-section {
+            background: var(--bg-card);
+            border: 1px solid var(--border-light);
+            border-radius: var(--radius-md);
+            padding: 16px 20px;
+            margin-bottom: 12px;
+        }
+        .answer-header {
             display: flex;
             align-items: center;
-            gap: 10px;
-        }
-
-        .query-main .dropdown-header .chat-header-actions {
-            order: 3;
-        }
-
-        .history-item {
-            padding: 12px 14px;
-            border-radius: var(--radius-md);
-            cursor: pointer;
-            transition: var(--transition);
-            margin-bottom: 8px;
-            background: var(--bg-light);
-        }
-
-        .history-item:hover {
-            background: var(--primary-lighter);
-        }
-
-        .history-item-question {
-            font-size: 14px;
-            font-weight: 600;
-            color: var(--text-main);
-            margin-bottom: 4px;
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
-        }
-
-        .history-item-time {
+            gap: 8px;
             font-size: 12px;
-            color: var(--text-muted);
+            font-weight: 600;
+            color: var(--primary);
+            margin-bottom: 12px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid var(--border-light);
         }
-
-        /* 响应式 */
-        @media (max-width: 768px) {
-            .container {
-                padding: 12px;
-                flex-direction: column;
-            }
-
-            .sidebar-nav {
-                width: 100%;
-                position: static;
-            }
-
-            .manage-header-row {
-                flex-direction: column;
-            }
-
-            .stats-row {
-                flex-direction: column;
-            }
-
-            .kb-grid {
-                grid-template-columns: 1fr;
-            }
-
-            .top-nav {
-                padding: 0 16px;
-            }
-
-            .top-nav .subtitle {
-                display: none;
-            }
-
-            .message-content {
-                max-width: 85%;
-            }
+        .answer-header svg {
+            width: 16px;
+            height: 16px;
         }
     </style>
+<base target="_blank">
 </head>
 <body>
-    <!-- 顶部导航 -->
-    <div class="top-nav">
-        <h1><i class="fas fa-graduation-cap"></i> 智慧知识库</h1>
-        <span class="subtitle">学校智能问答系统</span>
-        <div class="header-actions">
-            <button class="btn-help"><i class="fas fa-question-circle"></i> 帮助</button>
-        </div>
-    </div>
-
-    <div class="container">
-        <!-- 侧边栏 -->
-        <div class="sidebar-nav">
-            <div class="sidebar-logo">
-                <i class="fas fa-brain"></i>
-                <span>问答平台</span>
-            </div>
-
-            <div class="nav-section">
-                <div class="nav-section-title">功能菜单</div>
-                <button class="nav-item active" onclick="switchPage('manage-page')">
-                    <i class="fas fa-folder-cog"></i>
-                    <span>知识库管理</span>
-                </button>
-                <button class="nav-item" onclick="switchPage('query-page')">
-                    <i class="fas fa-comments"></i>
-                    <span>智能问答</span>
-                </button>
-            </div>
-
-            <div class="nav-section">
-                <div class="nav-section-title">快捷操作</div>
-                <button class="nav-item" onclick="showHelp()">
-                    <i class="fas fa-lightbulb"></i>
-                    <span>使用指南</span>
-                </button>
-                <button class="nav-item" onclick="showAbout()">
-                    <i class="fas fa-info-circle"></i>
-                    <span>关于系统</span>
-                </button>
-            </div>
-        </div>
-
-        <!-- 主内容区 -->
-        <div class="main-content">
-            <!-- 管理页面 -->
-            <div id="manage-page" class="page-container active">
-                <!-- 统计信息 -->
-                <div class="stats-row">
-                    <div class="stat-card">
-                        <div class="stat-icon blue">
-                            <i class="fas fa-database"></i>
-                        </div>
-                        <div class="stat-info">
-                            <h3 id="totalKbCount">0</h3>
-                            <p>知识库总数</p>
-                        </div>
-                    </div>
-                    <div class="stat-card">
-                        <div class="stat-icon green">
-                            <i class="fas fa-check-circle"></i>
-                        </div>
-                        <div class="stat-info">
-                            <h3 id="builtKbCount">0</h3>
-                            <p>已构建知识库</p>
-                        </div>
-                    </div>
-                    <div class="stat-card">
-                        <div class="stat-icon orange">
-                            <i class="fas fa-file-alt"></i>
-                        </div>
-                        <div class="stat-info">
-                            <h3 id="totalFileCount">0</h3>
-                            <p>文档总数</p>
-                        </div>
+    <div class="app">
+        <!-- Sidebar -->
+        <aside class="sidebar" id="sidebar">
+            <div class="sidebar-header">
+                <div class="logo">
+                    <div class="logo-icon">智</div>
+                    <div>
+                        <div class="logo-text">智识库</div>
+                        <div class="logo-sub">MULTI-KB RAG SYSTEM</div>
                     </div>
                 </div>
+            </div>
+            <nav class="sidebar-nav">
+                <div class="nav-section">
+                    <div class="nav-label">核心功能</div>
+                    <div class="nav-item active" data-page="dashboard" onclick="switchPage('dashboard')">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
+                        总览
+                    </div>
+                    <div class="nav-item" data-page="knowledge" onclick="switchPage('knowledge')">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
+                        知识库管理
+                        <span class="nav-badge" id="kb-count">0</span>
+                    </div>
+                    <div class="nav-item" data-page="chat" onclick="switchPage('chat')">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+                        智能问答
+                    </div>
+                </div>
+                <div class="nav-section">
+                    <div class="nav-label">系统</div>
+                    <div class="nav-item" data-page="history" onclick="switchPage('history')">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+                        对话历史
+                    </div>
+                    <div class="nav-item" onclick="showSettings()">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+                        系统设置
+                    </div>
+                </div>
+            </nav>
+            <div class="sidebar-footer">
+                <div class="status-indicator">
+                    <div class="status-dot"></div>
+                    <span>系统运行正常</span>
+                </div>
+            </div>
+        </aside>
 
-                <!-- 🔥 新的横向布局：创建知识库 + 我的知识库 -->
-                <div class="manage-header-row">
-                    <!-- 创建知识库 -->
-                    <div class="panel" style="flex: 0 0 auto; min-width: 320px;">
-                        <div class="panel-header-bar">
-                            <h2><i class="fas fa-plus-circle"></i> 创建知识库</h2>
-                        </div>
-                        <div class="panel-body">
-                            <div class="create-form">
-                                <input type="text" id="newKbName" placeholder="输入知识库名称，例如：课程资料">
-                                <button class="btn" onclick="createKB()">
-                                    <i class="fas fa-plus"></i> 创建
+        <!-- Main Content -->
+        <main class="main">
+            <!-- Top Bar -->
+            <header class="topbar">
+                <div class="topbar-left">
+                    <button class="btn btn-ghost btn-icon" id="menu-toggle" style="display:none;">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+                    </button>
+                    <h1 class="page-title" id="page-title">总览</h1>
+                </div>
+                <div class="topbar-right">
+                </div>
+            </header>
+
+            <!-- Pages -->
+            <div class="content">
+                <!-- Dashboard Page -->
+                <div class="page active" id="page-dashboard">
+                    <div class="hero">
+                        <div class="hero-content">
+                            <div class="hero-label">智识库 · 多知识库问答系统</div>
+                            <h1 class="hero-title">构建你的专属<br>知识智能引擎</h1>
+                            <p class="hero-desc">基于 RAG 技术，支持多知识库管理、智能检索与问答。上传文档，构建向量库，即刻开启智能对话。</p>
+                            <div class="hero-actions">
+                                <button class="btn btn-primary" onclick="switchPage('chat')">
+                                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+                                    开始对话
+                                </button>
+                                <button class="btn btn-secondary" onclick="switchPage('knowledge')">
+                                    管理知识库
                                 </button>
                             </div>
                         </div>
-                        <!-- 上传区域 -->
-                        <div class="upload-area" id="uploadArea" onclick="document.getElementById('fileInput').click()">
-                            <input type="file" id="fileInput" multiple accept=".txt,.pdf,.docx,.md,.json" style="display: none;" onchange="handleFileUpload()">
-                            <i class="fas fa-cloud-upload-alt"></i>
-                            <p>点击或拖拽文件上传到此区域</p>
-                            <p class="hint">仅支持 TXT / PDF / Word / Markdown / JSON</p>
+                    </div>
+
+                    <div class="stats-bar">
+                        <div class="stat-card">
+                            <div class="stat-icon blue">📚</div>
+                            <div class="stat-value" id="stat-kb-count">0</div>
+                            <div class="stat-label">知识库总数</div>
                         </div>
-                        <!-- 进度显示 -->
-                        <div id="progressWrapper" class="progress-wrapper">
-                            <div class="progress-info">
-                                <span class="progress-message" id="progressMessage">正在处理...</span>
-                                <span class="progress-percent" id="progressPercent">0%</span>
-                            </div>
-                            <div class="progress-bar-bg">
-                                <div class="progress-bar-fill" id="progressBar"></div>
-                            </div>
+                        <div class="stat-card">
+                            <div class="stat-icon green">📄</div>
+                            <div class="stat-value" id="stat-file-count">0</div>
+                            <div class="stat-label">文档总数</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-icon orange">💬</div>
+                            <div class="stat-value" id="stat-conv-count">0</div>
+                            <div class="stat-label">对话次数</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-icon purple">🔍</div>
+                            <div class="stat-value" id="stat-built-count">0</div>
+                            <div class="stat-label">已构建向量库</div>
                         </div>
                     </div>
 
-                    <!-- 我的知识库 -->
-                    <div class="panel" style="flex: 2;">
-                        <div class="panel-header-bar">
-                            <h2><i class="fas fa-database"></i> 我的知识库</h2>
-                            <span id="kbCount" style="font-size: 12px; opacity: 0.9;">0 个</span>
+                    <div class="section-header">
+                        <div>
+                            <h2 class="section-title">最近知识库</h2>
+                            <p class="section-subtitle">快速访问你的知识库</p>
                         </div>
-                        <div class="panel-body">
-                            <div id="kbGrid" class="kb-grid">
+                        <button class="btn btn-secondary btn-sm" onclick="switchPage('knowledge')">查看全部</button>
+                    </div>
+                    <div class="cards-grid" id="dashboard-kb-list"></div>
+                </div>
+
+                <!-- Knowledge Base Page -->
+                <div class="page" id="page-knowledge">
+                    <div class="section-header">
+                        <div>
+                            <h2 class="section-title">知识库管理</h2>
+                            <p class="section-subtitle">创建、上传、构建你的知识库</p>
+                        </div>
+                        <button class="btn btn-primary" onclick="showCreateKbModal()">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+                            新建知识库
+                        </button>
+                    </div>
+                    <div class="cards-grid" id="kb-list"></div>
+                </div>
+
+                <!-- Chat Page -->
+                <div class="page" id="page-chat">
+                    <div class="chat-container" style="height: calc(100vh - 128px); margin: -32px;">
+                        <div class="chat-sidebar" style="border-radius: 0;">
+                            <div class="chat-sidebar-header">
+                                <button class="btn btn-primary" style="width: 100%;" onclick="createNewConversation()">
+                                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+                                    新对话
+                                </button>
+                            </div>
+                            <div class="chat-list" id="conversation-list"></div>
+                        </div>
+                        <div class="chat-main">
+                            <div class="chat-messages" id="chat-messages">
                                 <div class="empty-state">
-                                    <i class="fas fa-folder-open"></i>
-                                    <p>暂无知识库，请先创建</p>
+                                    <div class="empty-icon">💬</div>
+                                    <div class="empty-title">开始新的对话</div>
+                                    <div class="empty-desc">选择知识库，输入问题，获取智能回答</div>
                                 </div>
                             </div>
-
-                            <!-- 提示信息 -->
-                            <div id="alertBox" class="alert"></div>
+                            <div class="chat-input-area">
+                                <div class="chat-toolbar">
+                                    <div style="font-size: 12px; color: var(--text-tertiary); margin-right: 8px;">选择知识库：</div>
+                                    <div class="kb-selector" id="chat-kb-selector"></div>
+                                    <div style="margin-left: auto; display: flex; align-items: center; gap: 8px;">
+                                        <label class="toggle">
+                                            <input type="checkbox" id="enable-web">
+                                            <span class="toggle-slider"></span>
+                                        </label>
+                                        <span style="font-size: 12px; color: var(--text-secondary);">联网搜索</span>
+                                    </div>
+                                </div>
+                                <div class="chat-input-wrapper">
+                                    <textarea class="chat-input" id="chat-input" placeholder="输入你的问题..." rows="1" onkeydown="handleChatKeydown(event)"></textarea>
+                                    <button class="btn btn-primary btn-icon" onclick="sendMessage()" id="send-btn">
+                                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+                                    </button>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
+
+                <!-- History Page -->
+                <div class="page" id="page-history">
+                    <div class="section-header">
+                        <div>
+                            <h2 class="section-title">对话历史</h2>
+                            <p class="section-subtitle">查看和管理所有对话记录</p>
+                        </div>
+                    </div>
+                    <div id="history-list"></div>
+                </div>
             </div>
+        </main>
+    </div>
 
-            <!-- 问答页面 -->
-            <div id="query-page" class="page-container">
-                <!-- 左右分栏布局 -->
-                <div class="query-layout">
-                    <!-- 左侧面板 -->
-                    <div class="query-sidebar">
-                        <!-- 知识库选择 -->
-                        <div class="dropdown-panel">
-                            <div class="dropdown-header" onclick="toggleDropdown(this)">
-                                <h2><i class="fas fa-check-square"></i> 选择知识库</h2>
-                                <span id="availableKbCount" style="font-size: 12px; opacity: 0.9;">0 个</span>
-                                <i class="fas fa-chevron-down dropdown-toggle"></i>
-                            </div>
-                            <div class="dropdown-body">
-                                <div class="panel-body">
-                                    <div id="kbTags" class="kb-tags">
-                                        <span style="color: var(--text-placeholder); font-size: 14px;">请先创建并构建知识库</span>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
+    <!-- Create KB Modal -->
+    <div class="modal-overlay" id="create-kb-modal">
+        <div class="modal">
+            <div class="modal-header">
+                <h3 class="modal-title">新建知识库</h3>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label class="form-label">知识库名称</label>
+                    <input type="text" class="form-input" id="new-kb-name" placeholder="例如：产品文档库">
+                    <p class="form-hint">名称将用于标识和检索该知识库</p>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" onclick="closeModal('create-kb-modal')">取消</button>
+                <button class="btn btn-primary" onclick="createKnowledgeBase()">创建</button>
+            </div>
+        </div>
+    </div>
 
-                        <!-- 历史记录 -->
-                        <div class="dropdown-panel">
-                            <div class="dropdown-header" onclick="toggleDropdown(this)">
-                                <h2><i class="fas fa-history"></i> 历史记录</h2>
-                                <i class="fas fa-chevron-down dropdown-toggle"></i>
-                            </div>
-                            <div class="dropdown-body">
-                                <div class="panel-body">
-                                    <div class="history-list" id="historyList">
-                                        <div class="empty-state" style="padding: 30px;">
-                                            <i class="fas fa-clock"></i>
-                                            <p>暂无历史记录</p>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
+    <!-- Upload Modal -->
+    <div class="modal-overlay" id="upload-modal">
+        <div class="modal" style="max-width: 600px;">
+            <div class="modal-header">
+                <h3 class="modal-title">上传文件</h3>
+            </div>
+            <div class="modal-body">
+                <p style="font-size: 13px; color: var(--text-secondary); margin-bottom: 16px;">
+                    知识库：<strong id="upload-kb-name"></strong>
+                </p>
+                <div class="upload-zone" id="upload-zone" onclick="document.getElementById('file-input').click()">
+                    <div class="upload-icon">📁</div>
+                    <div class="upload-text">点击或拖拽文件到此处上传</div>
+                    <div class="upload-hint">支持 PDF、TXT、MD、DOCX、JSON 格式</div>
+                </div>
+                <input type="file" id="file-input" style="display: none;" multiple onchange="handleFileSelect(event)">
+                <div class="file-list" id="upload-file-list"></div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" onclick="closeModal('upload-modal')">关闭</button>
+                <button class="btn btn-primary" onclick="uploadFiles()">开始上传</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- KB Detail Modal -->
+    <div class="modal-overlay" id="kb-detail-modal">
+        <div class="modal" style="max-width: 640px;">
+            <div class="modal-header">
+                <h3 class="modal-title" id="detail-kb-name">知识库详情</h3>
+            </div>
+            <div class="modal-body">
+                <div style="display: flex; gap: 12px; margin-bottom: 20px;">
+                    <button class="btn btn-primary btn-sm" onclick="showUploadModal(currentKbName)">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+                        上传文件
+                    </button>
+                    <button class="btn btn-secondary btn-sm" onclick="buildKnowledgeBase(currentKbName)" id="build-btn">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+                        构建向量库
+                    </button>
+                    <button class="btn btn-secondary btn-sm" style="color: var(--error); margin-left: auto;" onclick="deleteKnowledgeBase(currentKbName)">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>
+                        删除
+                    </button>
+                </div>
+                <div class="progress-container" id="build-progress" style="display: none;">
+                    <div class="progress-bar">
+                        <div class="progress-fill" id="progress-fill" style="width: 0%"></div>
                     </div>
+                    <div class="progress-text" id="progress-text">准备构建...</div>
+                </div>
+                <h4 style="font-size: 14px; font-weight: 600; margin: 20px 0 12px;">文件列表</h4>
+                <div id="kb-file-list"></div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" onclick="closeModal('kb-detail-modal')">关闭</button>
+            </div>
+        </div>
+    </div>
 
-                    <!-- 右侧智能问答下拉栏 -->
-                    <div class="dropdown-panel query-main">
-                        <div class="dropdown-header" onclick="toggleDropdown(this)">
-                            <h2><i class="fas fa-robot"></i> 智能问答助手</h2>
-                            <i class="fas fa-chevron-down dropdown-toggle"></i>
-                        </div>
-                        <div class="dropdown-body">
-                            <div class="chat-results" id="chatResults">
-                                <div class="empty-state">
-                                    <i class="fas fa-robot"></i>
-                                    <p>请先在左侧选择知识库，然后输入您的问题</p>
-                                </div>
-                            </div>
-
-                            <div class="chat-input-area">
-                                <div class="input-wrapper">
-                                    <button class="btn btn-light btn-sm" onclick="newChat()" title="新建对话" style="padding: 10px 14px;">
-                                        <i class="fas fa-plus"></i>
-                                    </button>
-                                    <div class="input-container">
-                                        <input type="text" id="questionInput" placeholder="输入您的问题，例如：这门课程的主要内容是什么？" onkeypress="handleEnter(event)">
-                                        <div class="input-actions">
-                                            <button onclick="clearQuestion()" title="清空">
-                                                <i class="fas fa-times"></i>
-                                            </button>
-                                        </div>
-                                    </div>
-                                    <button class="btn" id="submitBtn" onclick="askQuestion()">
-                                        <i class="fas fa-paper-plane"></i> 提问
-                                    </button>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
+    <!-- Knowledge Chunks Modal -->
+    <div class="chunks-modal" id="chunks-modal">
+        <div class="chunks-panel">
+            <div class="chunks-header">
+                <div>
+                    <div class="chunks-title">📚 检索到的知识切片</div>
+                    <div class="chunks-question" id="chunks-question"></div>
+                </div>
+                <button class="btn btn-ghost btn-icon" onclick="closeChunksModal()">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+                </button>
+            </div>
+            <div class="chunks-body">
+                <div class="chunks-list" id="chunks-list"></div>
+            </div>
+            <div class="chunks-footer">
+                <div class="chunks-info-text">
+                    已选 <span id="selected-chunks-count">0</span> 个切片
+                    <label style="margin-left: 16px; display: inline-flex; align-items: center; gap: 6px; cursor: pointer;">
+                        <input type="checkbox" id="select-all-chunks" onchange="toggleSelectAllChunks()">
+                        <span style="font-size: 13px;">全选</span>
+                    </label>
+                </div>
+                <div class="chunks-actions">
+                    <button class="btn btn-secondary" onclick="closeChunksModal()">取消</button>
+                    <button class="btn btn-primary" onclick="confirmChunks()">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>
+                        生成回答
+                    </button>
                 </div>
             </div>
         </div>
     </div>
 
+    <!-- Toast Container -->
+    <div class="toast-container" id="toast-container"></div>
+
     <script>
-        // 全局状态
-        let currentKB = null;
-        let kbData = [];
-        let selectedKBs = new Set();
-        let currentQuestion = '';
-        let buildEventSource = null;
-        let chatHistory = [];
+        // ===== State =====
+        let knowledgeBases = [];
+        let conversations = [];
+        let currentConversation = null;
+        let currentKbName = '';
+        let selectedKbs = new Set();
+        let uploadFilesList = [];
+        let eventSource = null;
 
-        // 初始化
-        window.onload = function() {
-            loadKBList();
+        // ===== Init =====
+        document.addEventListener('DOMContentLoaded', () => {
+            loadKnowledgeBases();
+            loadConversations();
+            updateStats();
+            setupAutoResize();
             setupDragDrop();
-        };
+        });
 
-        // 切换页面
-        function switchPage(pageId) {
-            document.querySelectorAll('.page-container').forEach(page => {
-                page.classList.remove('active');
-            });
+        // ===== Navigation =====
+        function switchPage(page) {
+            document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+            document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+            document.getElementById('page-' + page).classList.add('active');
+            document.querySelector('[data-page="' + page + '"]').classList.add('active');
 
-            document.getElementById(pageId).classList.add('active');
+            const titles = {
+                dashboard: '总览',
+                knowledge: '知识库管理',
+                chat: '智能问答',
+                history: '对话历史'
+            };
+            document.getElementById('page-title').textContent = titles[page] || '智识库';
 
-            document.querySelectorAll('.nav-item').forEach(btn => {
-                btn.classList.remove('active');
-            });
-
-            if (pageId === 'manage-page') {
-                document.querySelector('[onclick="switchPage(\'manage-page\')"]').classList.add('active');
-            } else if (pageId === 'query-page') {
-                document.querySelector('[onclick="switchPage(\'query-page\')"]').classList.add('active');
+            if (page === 'knowledge') loadKnowledgeBases();
+            if (page === 'chat') {
+                loadKnowledgeBases();
+                renderKbSelector();
             }
+            if (page === 'history') loadConversations();
         }
 
-        // 切换下拉栏
-        function toggleDropdown(header) {
-            const panel = header.parentElement;
-            panel.classList.toggle('collapsed');
+        // ===== API Helpers =====
+        async function apiGet(url) {
+            const res = await fetch(url);
+            return res.json();
         }
 
-        // 加载知识库列表
-        async function loadKBList() {
+        async function apiPost(url, data) {
+            const res = await fetch(url, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(data)
+            });
+            return res.json();
+        }
+
+        // ===== Knowledge Bases =====
+        async function loadKnowledgeBases() {
             try {
-                const response = await fetch('/api/kb/list');
-                const data = await response.json();
-
-                if (data.success) {
-                    kbData = data.data;
-                    renderKBGrid();
-                    renderKBTags();
+                const res = await apiGet('/api/kb/list');
+                if (res.success) {
+                    knowledgeBases = res.data;
+                    document.getElementById('kb-count').textContent = knowledgeBases.length;
+                    renderKbList();
+                    renderDashboardKbList();
                     updateStats();
-                    document.getElementById('kbCount').textContent = `${kbData.length} 个`;
-                    document.getElementById('availableKbCount').textContent = `${kbData.filter(kb => kb.is_built).length} 个`;
                 }
-            } catch (error) {
-                showAlert('加载知识库列表失败', 'error');
-                console.error('加载知识库失败:', error);
+            } catch (e) {
+                showToast('error', '加载失败', '无法获取知识库列表');
             }
         }
 
-        // 更新统计信息
-        function updateStats() {
-            document.getElementById('totalKbCount').textContent = kbData.length;
-            document.getElementById('builtKbCount').textContent = kbData.filter(kb => kb.is_built).length;
-            const totalFiles = kbData.reduce((sum, kb) => sum + (kb.file_count || 0), 0);
-            document.getElementById('totalFileCount').textContent = totalFiles;
-        }
-
-        // 渲染知识库网格
-        function renderKBGrid() {
-            const container = document.getElementById('kbGrid');
-
-            if (kbData.length === 0) {
+        function renderKbList() {
+            const container = document.getElementById('kb-list');
+            if (knowledgeBases.length === 0) {
                 container.innerHTML = `
-                    <div class="empty-state">
-                        <i class="fas fa-folder-open"></i>
-                        <p>暂无知识库，请先创建</p>
+                    <div class="empty-state" style="grid-column: 1 / -1;">
+                        <div class="empty-icon">📚</div>
+                        <div class="empty-title">暂无知识库</div>
+                        <div class="empty-desc">点击右上角按钮创建你的第一个知识库</div>
                     </div>
                 `;
                 return;
             }
 
-            container.innerHTML = kbData.map(kb => `
-                <div class="kb-card ${kb.is_built ? 'built' : 'unbuilt'} ${currentKB === kb.name ? 'active' : ''}" data-name="${kb.name}" onclick="selectKB('${kb.name}')">
-                    <div class="kb-card-header">
-                        <div class="kb-name">
-                            <i class="fas fa-database"></i>
-                            ${kb.name}
+            container.innerHTML = knowledgeBases.map(kb => `
+                <div class="card" onclick="showKbDetail('${kb.name}')">
+                    <div class="card-header">
+                        <div class="card-icon">📁</div>
+                        <div class="card-menu" onclick="event.stopPropagation()">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="5" r="1"/><circle cx="12" cy="12" r="1"/><circle cx="12" cy="19" r="1"/></svg>
                         </div>
-                        <span class="kb-status-tag ${kb.is_built ? 'built' : 'unbuilt'}">
-                            ${kb.is_built ? '<i class="fas fa-check"></i> 已就绪' : '<i class="fas fa-clock"></i> 待构建'}
+                    </div>
+                    <div class="card-body">
+                        <div class="card-title">${kb.name}</div>
+                        <div class="card-desc">${kb.file_count} 个文件 · ${kb.is_built ? '已构建' : '未构建'}</div>
+                    </div>
+                    <div class="card-footer">
+                        <span class="card-meta">${kb.knowledge_path}</span>
+                        <span class="card-status ${kb.is_built ? 'status-built' : 'status-pending'}">
+                            ${kb.is_built ? '✓ 已就绪' : '○ 待构建'}
                         </span>
                     </div>
-                    <div class="kb-meta">
-                        <span class="kb-meta-item"><i class="fas fa-file"></i> ${kb.file_count} 个文档</span>
-                    </div>
-                    <div class="kb-actions">
-                        <button class="btn btn-sm btn-light" onclick="event.stopPropagation(); loadKBFiles('${kb.name}')">
-                            <i class="fas fa-list"></i> 文件
-                        </button>
-                        <button class="btn btn-sm ${kb.is_built ? 'btn-success' : ''}" onclick="event.stopPropagation(); buildKB('${kb.name}')">
-                            <i class="fas fa-hammer"></i> ${kb.is_built ? '重构' : '构建'}
-                        </button>
-                        <button class="btn btn-sm btn-danger" onclick="event.stopPropagation(); deleteKB('${kb.name}')">
-                            <i class="fas fa-trash"></i>
-                        </button>
-                    </div>
-                    <div class="file-list" id="fileList_${kb.name}"></div>
                 </div>
             `).join('');
         }
 
-        // 渲染知识库标签
-        function renderKBTags() {
-            const container = document.getElementById('kbTags');
-            const builtKBs = kbData.filter(kb => kb.is_built);
-
-            if (builtKBs.length === 0) {
-                container.innerHTML = '<span style="color: var(--text-placeholder); font-size: 14px;">请先创建并构建知识库</span>';
-                return;
-            }
-
-            container.innerHTML = kbData.map(kb => {
-                const isSelected = selectedKBs.has(kb.name);
-                const isDisabled = !kb.is_built;
-
-                return `
-                    <div class="kb-tag-item ${isSelected ? 'selected' : ''} ${isDisabled ? 'disabled' : ''}"
-                         onclick="${isDisabled ? '' : `toggleKBTag('${kb.name}')`}">
-                        <i class="far fa-circle unchecked-icon"></i>
-                        <i class="fas fa-check-circle check-icon"></i>
-                        <span>${kb.name}</span>
+        function renderDashboardKbList() {
+            const container = document.getElementById('dashboard-kb-list');
+            const recent = knowledgeBases.slice(0, 4);
+            if (recent.length === 0) {
+                container.innerHTML = `
+                    <div class="empty-state" style="grid-column: 1 / -1;">
+                        <div class="empty-icon">📚</div>
+                        <div class="empty-title">暂无知识库</div>
+                        <div class="empty-desc">创建知识库开始使用</div>
                     </div>
                 `;
-            }).join('');
-        }
-
-        // 切换知识库标签
-        function toggleKBTag(kbName) {
-            if (selectedKBs.has(kbName)) {
-                selectedKBs.delete(kbName);
-            } else {
-                selectedKBs.add(kbName);
+                return;
             }
-            renderKBTags();
+            container.innerHTML = recent.map(kb => `
+                <div class="card" onclick="showKbDetail('${kb.name}')">
+                    <div class="card-header">
+                        <div class="card-icon">📁</div>
+                        <div class="card-menu" onclick="event.stopPropagation()">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="5" r="1"/><circle cx="12" cy="12" r="1"/><circle cx="12" cy="19" r="1"/></svg>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <div class="card-title">${kb.name}</div>
+                        <div class="card-desc">${kb.file_count} 个文件 · ${kb.is_built ? '已构建' : '未构建'}</div>
+                    </div>
+                    <div class="card-footer">
+                        <span class="card-meta">${kb.knowledge_path}</span>
+                        <span class="card-status ${kb.is_built ? 'status-built' : 'status-pending'}">
+                            ${kb.is_built ? '✓ 已就绪' : '○ 待构建'}
+                        </span>
+                    </div>
+                </div>
+            `).join('');
         }
 
-        // 选择知识库
-        function selectKB(kbName) {
-            currentKB = kbName;
-            renderKBGrid();
-            showAlert(`已选择「${kbName}」，点击上传区域添加文件`, 'info');
+        function updateStats() {
+            document.getElementById('stat-kb-count').textContent = knowledgeBases.length;
+            document.getElementById('stat-file-count').textContent = knowledgeBases.reduce((a, b) => a + b.file_count, 0);
+            document.getElementById('stat-built-count').textContent = knowledgeBases.filter(k => k.is_built).length;
         }
 
-        // 创建知识库
-        async function createKB() {
-            const nameInput = document.getElementById('newKbName');
-            const name = nameInput.value.trim();
+        // ===== Modals =====
+        function showModal(id) {
+            document.getElementById(id).classList.add('active');
+        }
 
+        function closeModal(id) {
+            document.getElementById(id).classList.remove('active');
+        }
+
+        function showCreateKbModal() {
+            document.getElementById('new-kb-name').value = '';
+            showModal('create-kb-modal');
+        }
+
+        async function createKnowledgeBase() {
+            const name = document.getElementById('new-kb-name').value.trim();
             if (!name) {
-                showAlert('请输入知识库名称', 'error');
+                showToast('warning', '请输入名称', '知识库名称不能为空');
                 return;
             }
-
             try {
-                const response = await fetch('/api/kb/create', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ name })
-                });
-
-                const data = await response.json();
-
-                if (data.success) {
-                    showAlert(data.message, 'success');
-                    nameInput.value = '';
-                    loadKBList();
+                const res = await apiPost('/api/kb/create', { name });
+                if (res.success) {
+                    showToast('success', '创建成功', `知识库「${name}」已创建`);
+                    closeModal('create-kb-modal');
+                    loadKnowledgeBases();
                 } else {
-                    showAlert(data.message, 'error');
+                    showToast('error', '创建失败', res.message);
                 }
-            } catch (error) {
-                showAlert('创建失败: ' + error, 'error');
+            } catch (e) {
+                showToast('error', '创建失败', '网络错误');
             }
         }
 
-        // 删除知识库
-        async function deleteKB(kbName) {
-            if (!confirm(`确定要删除「${kbName}」知识库吗？此操作不可恢复！`)) {
-                return;
-            }
-
-            try {
-                const response = await fetch('/api/kb/delete', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ name: kbName })
-                });
-
-                const data = await response.json();
-
-                if (data.success) {
-                    showAlert(data.message, 'success');
-                    if (currentKB === kbName) currentKB = null;
-                    selectedKBs.delete(kbName);
-                    loadKBList();
-                } else {
-                    showAlert(data.message, 'error');
-                }
-            } catch (error) {
-                showAlert('删除失败: ' + error, 'error');
-            }
+        function showUploadModal(kbName) {
+            currentKbName = kbName;
+            document.getElementById('upload-kb-name').textContent = kbName;
+            uploadFilesList = [];
+            renderUploadFileList();
+            // 关闭知识详情模态框再打开上传模态框
+            closeModal('kb-detail-modal');
+            showModal('upload-modal');
         }
 
-        // 加载知识库文件
-        async function loadKBFiles(kbName) {
-            const fileListEl = document.getElementById(`fileList_${kbName}`);
-
-            if (fileListEl.classList.contains('show')) {
-                fileListEl.classList.remove('show');
-                return;
-            }
+        async function showKbDetail(kbName) {
+            currentKbName = kbName;
+            document.getElementById('detail-kb-name').textContent = kbName;
+            document.getElementById('build-progress').style.display = 'none';
 
             try {
-                const response = await fetch(`/api/kb/files?name=${encodeURIComponent(kbName)}`);
-                const data = await response.json();
-
-                if (data.success) {
-                    if (data.data.length === 0) {
-                        fileListEl.innerHTML = '<div class="file-empty">暂无文件</div>';
+                const res = await apiGet('/api/kb/files?name=' + encodeURIComponent(kbName));
+                if (res.success) {
+                    const list = document.getElementById('kb-file-list');
+                    if (res.data.length === 0) {
+                        list.innerHTML = '<div class="empty-state" style="padding: 20px;"><div class="empty-desc">暂无文件</div></div>';
                     } else {
-                        fileListEl.innerHTML = data.data.map(file => `
+                        list.innerHTML = res.data.map(f => `
                             <div class="file-item">
-                                <i class="fas fa-file-alt"></i>
-                                <span>${file.name}</span>
-                                <span class="file-size">${formatFileSize(file.size)}</span>
+                                <div class="file-icon">📄</div>
+                                <div class="file-info">
+                                    <div class="file-name">${f.name}</div>
+                                    <div class="file-size">${formatBytes(f.size)} · ${new Date(f.modified * 1000).toLocaleString()}</div>
+                                </div>
                             </div>
                         `).join('');
                     }
-                    fileListEl.classList.add('show');
                 }
-            } catch (error) {
-                console.error('加载文件列表失败:', error);
+            } catch (e) {
+                showToast('error', '加载失败', '无法获取文件列表');
             }
+            showModal('kb-detail-modal');
         }
 
-        // 格式化文件大小
-        function formatFileSize(bytes) {
-            if (bytes < 1024) return bytes + ' B';
-            if (bytes < 1024 * 1024) return (bytes / 1024).toFixed(1) + ' KB';
-            return (bytes / (1024 * 1024)).toFixed(1) + ' MB';
-        }
-
-        // 拖拽上传
+        // ===== File Upload =====
         function setupDragDrop() {
-            const uploadArea = document.getElementById('uploadArea');
-
-            uploadArea.addEventListener('dragover', (e) => {
+            const zone = document.getElementById('upload-zone');
+            zone.addEventListener('dragover', e => {
                 e.preventDefault();
-                uploadArea.classList.add('dragover');
+                zone.classList.add('dragover');
             });
-
-            uploadArea.addEventListener('dragleave', () => {
-                uploadArea.classList.remove('dragover');
-            });
-
-            uploadArea.addEventListener('drop', (e) => {
+            zone.addEventListener('dragleave', () => zone.classList.remove('dragover'));
+            zone.addEventListener('drop', e => {
                 e.preventDefault();
-                uploadArea.classList.remove('dragover');
-
-                if (!currentKB) {
-                    showAlert('请先选择一个知识库', 'error');
-                    return;
-                }
-
-                const files = e.dataTransfer.files;
-
-                // 过滤不支持的文件类型
-                const allowedExtensions = ['.txt', '.pdf', '.docx', '.md', '.json'];
-                const validFiles = Array.from(files).filter(file => {
-                    const ext = '.' + file.name.split('.').pop().toLowerCase();
-                    return allowedExtensions.includes(ext);
-                });
-
-                if (validFiles.length === 0) {
-                    showAlert('仅支持 TXT / PDF / Word / Markdown / JSON', 'error');
-                    return;
-                }
-
-                if (validFiles.length < files.length) {
-                    showAlert(`已过滤 ${files.length - validFiles.length} 个不支持的文件`, 'info');
-                }
-
-                if (validFiles.length > 0) {
-                    uploadFiles(validFiles);
-                }
+                zone.classList.remove('dragover');
+                handleFiles(e.dataTransfer.files);
             });
         }
 
-        // 处理文件上传
-        function handleFileUpload() {
-            const fileInput = document.getElementById('fileInput');
-            const files = fileInput.files;
-
-            if (!currentKB) {
-                showAlert('请先选择一个知识库', 'error');
-                fileInput.value = '';
-                return;
-            }
-
-            // 过滤不支持的文件类型
-            const allowedExtensions = ['.txt', '.pdf', '.docx', '.md', '.json'];
-            const validFiles = Array.from(files).filter(file => {
-                const ext = '.' + file.name.split('.').pop().toLowerCase();
-                return allowedExtensions.includes(ext);
-            });
-
-            if (validFiles.length === 0) {
-                showAlert('仅支持 TXT / PDF / Word / Markdown / JSON', 'error');
-                fileInput.value = '';
-                return;
-            }
-
-            if (validFiles.length < files.length) {
-                showAlert(`已过滤 ${files.length - validFiles.length} 个不支持的文件`, 'info');
-            }
-
-            if (validFiles.length > 0) {
-                uploadFiles(validFiles);
-            }
+        function handleFileSelect(e) {
+            handleFiles(e.target.files);
         }
 
-        // 上传文件
-        async function uploadFiles(files) {
-            if (!currentKB) {
-                showAlert('请先选择一个知识库', 'error');
+        function handleFiles(files) {
+            uploadFilesList = Array.from(files);
+            renderUploadFileList();
+        }
+
+        function renderUploadFileList() {
+            const container = document.getElementById('upload-file-list');
+            if (uploadFilesList.length === 0) {
+                container.innerHTML = '';
+                return;
+            }
+            container.innerHTML = uploadFilesList.map((f, i) => `
+                <div class="file-item">
+                    <div class="file-icon">📄</div>
+                    <div class="file-info">
+                        <div class="file-name">${f.name}</div>
+                        <div class="file-size">${formatBytes(f.size)}</div>
+                    </div>
+                    <div class="file-actions">
+                        <button class="btn btn-ghost btn-icon btn-sm" onclick="removeUploadFile(${i})">
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+                        </button>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function removeUploadFile(index) {
+            uploadFilesList.splice(index, 1);
+            renderUploadFileList();
+        }
+
+        async function uploadFiles() {
+            if (uploadFilesList.length === 0) {
+                showToast('warning', '未选择文件', '请先选择要上传的文件');
                 return;
             }
 
-            showAlert(`正在上传 ${files.length} 个文件...`, 'info');
-
-            let successCount = 0;
-            let failCount = 0;
-            let autoBuildKB = null;
-
-            for (const file of Array.from(files)) {
+            for (const file of uploadFilesList) {
                 const formData = new FormData();
-                formData.append('kb_name', currentKB);
+                formData.append('kb_name', currentKbName);
                 formData.append('file', file);
 
                 try {
-                    const response = await fetch('/api/kb/upload', {
+                    const res = await fetch('/api/kb/upload', {
                         method: 'POST',
                         body: formData
                     });
-
-                    const data = await response.json();
-
+                    const data = await res.json();
                     if (data.success) {
-                        successCount++;
-                        if (data.auto_build) {
-                            autoBuildKB = data.kb_name;
-                        }
+                        showToast('success', '上传成功', `${file.name} 已上传`);
                     } else {
-                        failCount++;
+                        showToast('error', '上传失败', data.message);
                     }
-                } catch (error) {
-                    failCount++;
+                } catch (e) {
+                    showToast('error', '上传失败', '网络错误');
                 }
             }
 
-            document.getElementById('fileInput').value = '';
-
-            if (failCount === 0) {
-                showAlert(`成功上传 ${successCount} 个文件`, 'success');
-            } else {
-                showAlert(`成功 ${successCount} 个，失败 ${failCount} 个`, 'error');
-            }
-
-            await loadKBList();
-
-            if (autoBuildKB) {
-                setTimeout(() => buildKB(autoBuildKB), 500);
-            }
+            uploadFilesList = [];
+            renderUploadFileList();
+            loadKnowledgeBases();
+            showKbDetail(currentKbName);
         }
 
-        // 构建知识库
-        function buildKB(kbName) {
-            const progressWrapper = document.getElementById('progressWrapper');
-            const progressBar = document.getElementById('progressBar');
-            const progressMessage = document.getElementById('progressMessage');
-            const progressPercent = document.getElementById('progressPercent');
+        // ===== Build Knowledge Base =====
+        function buildKnowledgeBase(kbName) {
+            if (eventSource) eventSource.close();
 
-            progressWrapper.classList.add('show');
-            progressBar.style.width = '0%';
-            progressMessage.textContent = '正在构建向量库...';
-            progressPercent.textContent = '0%';
+            document.getElementById('build-progress').style.display = 'block';
+            document.getElementById('progress-fill').style.width = '0%';
+            document.getElementById('progress-text').textContent = '准备构建...';
 
-            if (buildEventSource) {
-                buildEventSource.close();
-            }
+            eventSource = new EventSource('/build_progress/' + encodeURIComponent(kbName));
 
-            buildEventSource = new EventSource(`/build_progress/${encodeURIComponent(kbName)}`);
+            eventSource.onmessage = e => {
+                const data = JSON.parse(e.data);
+                document.getElementById('progress-fill').style.width = data.progress + '%';
+                document.getElementById('progress-text').textContent = data.message;
 
-            buildEventSource.onmessage = function(e) {
-                try {
-                    const data = JSON.parse(e.data);
-                    const { progress, message, success } = data;
-
-                    progressBar.style.width = `${progress}%`;
-                    progressMessage.textContent = message;
-                    progressPercent.textContent = `${progress}%`;
-
-                    if (progress === 100) {
-                        buildEventSource.close();
-
-                        if (success) {
-                            showAlert(message, 'success');
-                            setTimeout(() => {
-                                progressWrapper.classList.remove('show');
-                            }, 2000);
-                        } else {
-                            showAlert(message, 'error');
-                        }
-
-                        loadKBList();
+                if (data.progress === 100) {
+                    eventSource.close();
+                    if (data.success) {
+                        showToast('success', '构建完成', data.message);
+                        loadKnowledgeBases();
+                    } else {
+                        showToast('error', '构建失败', data.message);
                     }
-                } catch (err) {
-                    console.error('解析进度数据失败:', err);
                 }
             };
 
-            buildEventSource.onerror = function() {
-                buildEventSource.close();
-                showAlert('构建过程出错', 'error');
-                progressWrapper.classList.remove('show');
+            eventSource.onerror = () => {
+                eventSource.close();
+                showToast('error', '连接错误', '构建进度连接中断');
             };
         }
 
-        // 提问
-        async function askQuestion() {
-            const questionInput = document.getElementById('questionInput');
-            const question = questionInput.value.trim();
-
-            if (!question) {
-                showAlert('请输入问题', 'error');
-                return;
-            }
-
-            if (selectedKBs.size === 0) {
-                showAlert('请至少选择一个知识库', 'error');
-                return;
-            }
-
-            currentQuestion = question;
-            const selectedKBArray = Array.from(selectedKBs);
-
-            addMessageToChat(question, 'user');
+        // ===== Delete Knowledge Base =====
+        async function deleteKnowledgeBase(kbName) {
+            if (!confirm(`确定要删除知识库「${kbName}」吗？此操作不可恢复。`)) return;
 
             try {
-                const response = await fetch('/chat', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({
-                        question: question,
-                        selected_kbs: selectedKBArray,
-                    })
-                });
-
-                const data = await response.json();
-                renderKnowledgeSelection(data, selectedKBArray);
-            } catch (error) {
-                addMessageToChat(`请求失败: ${error.message}`, 'ai', true);
+                const res = await apiPost('/api/kb/delete', { name: kbName });
+                if (res.success) {
+                    showToast('success', '删除成功', `知识库「${kbName}」已删除`);
+                    closeModal('kb-detail-modal');
+                    loadKnowledgeBases();
+                } else {
+                    showToast('error', '删除失败', res.message);
+                }
+            } catch (e) {
+                showToast('error', '删除失败', '网络错误');
             }
         }
 
-        // 添加聊天消息
-        function addMessageToChat(content, sender, isError = false) {
-            const resultsEl = document.getElementById('chatResults');
-
-            if (resultsEl.querySelector('.empty-state')) {
-                resultsEl.innerHTML = '';
-            }
-
-            const avatarIcon = sender === 'user' ? 'fa-user' : 'fa-robot';
-            const messageClass = sender === 'user' ? 'user' : 'ai';
-            const messageStyle = isError ? 'alert alert-error show' : '';
-
-            const messageHTML = `
-                <div class="chat-message ${messageClass}">
-                    <div class="message-avatar ${messageClass}">
-                        <i class="fas ${avatarIcon}"></i>
-                    </div>
-                    <div class="message-content ${messageStyle}">
-                        ${content}
-                    </div>
-                </div>
-            `;
-
-            resultsEl.insertAdjacentHTML('beforeend', messageHTML);
-            resultsEl.scrollTop = resultsEl.scrollHeight;
-        }
-
-        // 渲染知识选择
-        function renderKnowledgeSelection(data, selectedKBs) {
-            const resultsEl = document.getElementById('chatResults');
-
-            if (data.error) {
-                addMessageToChat(data.error, 'ai', true);
+        // ===== Chat =====
+        function renderKbSelector() {
+            const container = document.getElementById('chat-kb-selector');
+            if (knowledgeBases.length === 0) {
+                container.innerHTML = '<span style="font-size: 12px; color: var(--text-tertiary);">暂无可用知识库</span>';
                 return;
             }
+            container.innerHTML = knowledgeBases.map(kb => `
+                <div class="kb-chip ${selectedKbs.has(kb.name) ? 'selected' : ''}" onclick="toggleKb('${kb.name}')">
+                    <span class="check">✓</span>
+                    <span>${kb.name}</span>
+                </div>
+            `).join('');
+        }
 
-            let knowledgeHTML = '';
+        function toggleKb(name) {
+            if (selectedKbs.has(name)) {
+                selectedKbs.delete(name);
+            } else {
+                selectedKbs.add(name);
+            }
+            renderKbSelector();
+        }
 
-            if (Array.isArray(data.local_knowledge) && data.local_knowledge.length > 0) {
-                knowledgeHTML += `
-                    <div class="result-section">
-                        <h3 class="result-section-title">
-                            <i class="fas fa-file-alt"></i> 检索到的相关知识
-                            <small style="font-weight: normal; color: var(--text-muted);">（勾选要使用的知识块）</small>
-                        </h3>
-                        <div id="knowledgePanels" class="knowledge-panels">
-                `;
+        function setupAutoResize() {
+            const textarea = document.getElementById('chat-input');
+            textarea.addEventListener('input', () => {
+                textarea.style.height = 'auto';
+                textarea.style.height = Math.min(textarea.scrollHeight, 120) + 'px';
+            });
+        }
 
-                data.local_knowledge.forEach((item, index) => {
-                    if (typeof item === 'object' && item.content) {
-                        knowledgeHTML += `
-                            <div class="knowledge-item expanded" data-index="${index}">
-                                <div class="knowledge-header" onclick="toggleKnowledgeItem(this)">
-                                    <input type="checkbox" class="kb-checkbox" checked data-index="${index}" onclick="event.stopPropagation()">
-                                    <span class="knowledge-source">
-                                        <i class="fas fa-database"></i> ${item.source || '未知来源'}
-                                    </span>
-                                    <i class="fas fa-chevron-down knowledge-toggle"></i>
-                                </div>
-                                <div class="knowledge-content">
-                                    <div class="knowledge-text">${escapeHtml(item.content)}</div>
-                                </div>
-                            </div>
-                        `;
-                    }
-                });
+        function handleChatKeydown(e) {
+            if (e.key === 'Enter' && !e.shiftKey) {
+                e.preventDefault();
+                sendMessage();
+            }
+        }
 
-                knowledgeHTML += `
-                        </div>
-                        <button class="btn" onclick="generateAnswerWithSelected('${selectedKBs.join(',')}')" style="margin-top: 16px; width: 100%;">
-                            <i class="fas fa-magic"></i> 使用选中的知识生成回答
+        async function createNewConversation() {
+            try {
+                const res = await apiPost('/api/conversation', { title: '新对话' });
+                if (res.success) {
+                    currentConversation = res.data;
+                    conversations.unshift(res.data);
+                    renderConversationList();
+                    clearChatMessages();
+                    showToast('success', '创建成功', '新对话已创建');
+                }
+            } catch (e) {
+                showToast('error', '创建失败', '无法创建新对话');
+            }
+        }
+
+        function clearChatMessages() {
+            document.getElementById('chat-messages').innerHTML = `
+                <div class="empty-state">
+                    <div class="empty-icon">💬</div>
+                    <div class="empty-title">开始新的对话</div>
+                    <div class="empty-desc">选择知识库，输入问题，获取智能回答</div>
+                </div>
+            `;
+        }
+
+        async function loadConversations() {
+            try {
+                const res = await apiGet('/api/history');
+                if (res.success) {
+                    conversations = res.data;
+                    document.getElementById('stat-conv-count').textContent = conversations.length;
+                    renderConversationList();
+                    renderHistoryList();
+                }
+            } catch (e) {
+                console.error('Failed to load conversations', e);
+            }
+        }
+
+        function renderConversationList() {
+            const container = document.getElementById('conversation-list');
+            if (conversations.length === 0) {
+                container.innerHTML = '<div class="empty-state" style="padding: 20px;"><div class="empty-desc">暂无对话</div></div>';
+                return;
+            }
+            container.innerHTML = conversations.map(c => `
+                <div class="chat-item ${currentConversation && currentConversation.id === c.id ? 'active' : ''}" onclick="loadConversation('${c.id}')">
+                    <div class="chat-item-title">${c.title}</div>
+                    <div class="chat-item-actions">
+                        <button class="btn btn-ghost btn-icon btn-sm chat-item-edit" onclick="event.stopPropagation(); startRenameConversation('${c.id}', '${c.title}')" title="重命名">
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15 4 16h7"/></svg>
                         </button>
                     </div>
-                `;
-            } else {
-                knowledgeHTML += `
-                    <div class="alert alert-info show">
-                        <i class="fas fa-info-circle"></i> 未在选中的知识库中找到相关内容
-                    </div>
-                `;
-            }
-
-            const aiMessageHTML = `
-                <div class="chat-message ai">
-                    <div class="message-avatar ai">
-                        <i class="fas fa-robot"></i>
-                    </div>
-                    <div class="message-content">
-                        ${knowledgeHTML}
-                    </div>
                 </div>
-            `;
-
-            resultsEl.insertAdjacentHTML('beforeend', aiMessageHTML);
-            resultsEl.scrollTop = resultsEl.scrollHeight;
+            `).join('');
         }
 
-        // 切换知识块
-        function toggleKnowledgeItem(header) {
-            const item = header.parentElement;
-            item.classList.toggle('expanded');
+        function startRenameConversation(id, currentTitle) {
+            const newTitle = prompt('请输入新的对话名称:', currentTitle);
+            if (newTitle && newTitle.trim() && newTitle !== currentTitle) {
+                renameConversation(id, newTitle.trim());
+            }
         }
 
-        // 使用选中的知识生成回答
-        async function generateAnswerWithSelected(selectedKBsStr) {
-            const selectedKBs = selectedKBsStr.split(',');
-            const checkboxes = document.querySelectorAll('.kb-checkbox:checked');
-            const selectedKnowledge = [];
+        async function renameConversation(id, newTitle) {
+            try {
+                const res = await fetch('/api/conversation/' + id, {
+                    method: 'PUT',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ title: newTitle })
+                });
+                const data = await res.json();
+                if (data.success) {
+                    // Update local conversations
+                    const conv = conversations.find(c => c.id === id);
+                    if (conv) conv.title = newTitle;
+                    renderConversationList();
+                    renderHistoryList();
+                    if (currentConversation && currentConversation.id === id) {
+                        currentConversation.title = newTitle;
+                    }
+                    showToast('success', '重命名成功', '对话名称已更新');
+                } else {
+                    showToast('error', '重命名失败', data.message);
+                }
+            } catch (e) {
+                showToast('error', '重命名失败', '网络错误');
+            }
+        }
 
-            checkboxes.forEach(checkbox => {
-                const index = checkbox.dataset.index;
-                const item = checkbox.closest('.knowledge-item');
-                const content = item.querySelector('.knowledge-text').textContent;
-                const source = item.querySelector('.knowledge-source').textContent.trim();
-                selectedKnowledge.push({ index: parseInt(index), content, source });
-            });
+        async function loadConversation(id) {
+            try {
+                const res = await apiGet('/api/conversation/' + id);
+                if (res.success) {
+                    currentConversation = res.data;
+                    renderConversationList();
+                    renderMessages(res.data.messages);
+                }
+            } catch (e) {
+                showToast('error', '加载失败', '无法加载对话');
+            }
+        }
 
-            if (selectedKnowledge.length === 0) {
-                showAlert('请至少选择一个知识块', 'error');
+        function renderMessages(messages) {
+            const container = document.getElementById('chat-messages');
+            if (!messages || messages.length === 0) {
+                clearChatMessages();
+                return;
+            }
+            container.innerHTML = messages.map(m => `
+                <div class="message message-user">
+                    <div class="message-bubble">${escapeHtml(m.question)}</div>
+                    <div class="message-meta">${m.time}</div>
+                </div>
+                <div class="message message-assistant">
+                    <div class="message-bubble">
+                        ${m.thinking ? `<div class="thinking-box"><div class="thinking-label"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/></svg>思考过程</div>${escapeHtml(m.thinking)}</div>` : ''}
+                        <div class="markdown-content">${parseMarkdown(m.answer)}</div>
+                    </div>
+                    <div class="message-meta">AI 助手 · ${m.time}</div>
+                </div>
+            `).reverse().join('');
+            container.scrollTop = container.scrollHeight;
+        }
+
+        let pendingQuestion = '';
+        let pendingEnableWeb = false;
+        let retrievedChunks = [];
+        let selectedChunks = new Set();
+
+        async function sendMessage() {
+            const input = document.getElementById('chat-input');
+            const question = input.value.trim();
+            if (!question) return;
+
+            if (selectedKbs.size === 0) {
+                showToast('warning', '未选择知识库', '请至少选择一个知识库');
                 return;
             }
 
-            const resultsEl = document.getElementById('chatResults');
-            const loadingMessageHTML = `
-                <div class="chat-message ai">
-                    <div class="message-avatar ai">
-                        <i class="fas fa-robot"></i>
-                    </div>
-                    <div class="message-content">
-                        <div style="display: flex; align-items: center; gap: 12px; padding: 8px 0;">
-                            <div class="loading-spinner dark"></div>
-                            <span>正在智能生成回答...</span>
-                        </div>
+            pendingQuestion = question;
+            pendingEnableWeb = document.getElementById('enable-web').checked;
+
+            // Clear input
+            input.value = '';
+            input.style.height = 'auto';
+
+            // Add user message
+            const container = document.getElementById('chat-messages');
+            if (container.querySelector('.empty-state')) {
+                container.innerHTML = '';
+            }
+
+            const userMsg = document.createElement('div');
+            userMsg.className = 'message message-user';
+            userMsg.innerHTML = `<div class="message-bubble">${escapeHtml(question)}</div><div class="message-meta">刚刚</div>`;
+            container.appendChild(userMsg);
+            container.scrollTop = container.scrollHeight;
+
+            // Show searching indicator
+            const searchingMsg = document.createElement('div');
+            searchingMsg.className = 'message message-assistant';
+            searchingMsg.innerHTML = `
+                <div class="message-bubble">
+                    <div style="display: flex; align-items: center; gap: 8px; color: var(--text-secondary);">
+                        <div class="typing-indicator"><span></span><span></span><span></span></div>
+                        <span>正在检索知识库...</span>
                     </div>
                 </div>
             `;
-
-            resultsEl.insertAdjacentHTML('beforeend', loadingMessageHTML);
-            resultsEl.scrollTop = resultsEl.scrollHeight;
+            container.appendChild(searchingMsg);
+            container.scrollTop = container.scrollHeight;
 
             try {
-                const response = await fetch('/chat', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({
-                        question: currentQuestion,
-                        selected_kbs: selectedKBs,
-                        selected_knowledge: selectedKnowledge
-                    })
+                // Stage 1: Retrieve knowledge chunks
+                const res = await apiPost('/api/retrieve', {
+                    question: question,
+                    selected_kbs: Array.from(selectedKbs)
                 });
 
-                const data = await response.json();
+                container.removeChild(searchingMsg);
 
-                const loadingMessage = resultsEl.lastElementChild;
-                if (loadingMessage && loadingMessage.querySelector('.loading-spinner')) {
-                    loadingMessage.remove();
+                if (res.error) {
+                    showToast('error', '检索失败', res.error);
+                    return;
                 }
 
-                // 添加到历史
-                chatHistory.unshift({ question: currentQuestion, time: new Date() });
-                if (chatHistory.length > 10) chatHistory.pop();
-                renderHistory();
+                retrievedChunks = res.knowledge_chunks || [];
 
-                const finalAnswerHTML = `
-                    <div class="chat-message ai">
-                        <div class="message-avatar ai">
-                            <i class="fas fa-robot"></i>
-                        </div>
-                        <div class="message-content">
-                            <div class="answer-box">
-                                ${renderMarkdown(data.final_answer || '生成回答失败')}
-                                <div style="margin-top: 16px; display: flex; gap: 10px;">
-                                    <button class="btn btn-sm btn-light" onclick="copyAnswer()">
-                                        <i class="fas fa-copy"></i> 复制回答
-                                    </button>
-                                </div>
-                            </div>
-                        </div>
+                if (retrievedChunks.length === 0) {
+                    // No chunks found, directly generate answer
+                    showToast('warning', '未找到相关知识', '将使用知识库全部内容生成回答');
+                    await generateAnswer([]);
+                } else {
+                    // Show chunks selection modal
+                    showChunksModal(retrievedChunks, question);
+                }
+
+            } catch (e) {
+                container.removeChild(searchingMsg);
+                showToast('error', '发送失败', '网络错误');
+            }
+        }
+
+        function showChunksModal(chunks, question) {
+            document.getElementById('chunks-question').textContent = '问题: ' + question;
+            selectedChunks = new Set();
+            renderChunksList(chunks);
+            document.getElementById('chunks-modal').classList.add('active');
+        }
+
+        function closeChunksModal() {
+            document.getElementById('chunks-modal').classList.remove('active');
+        }
+
+        function renderChunksList(chunks) {
+            const container = document.getElementById('chunks-list');
+
+            if (chunks.length === 0) {
+                container.innerHTML = `
+                    <div class="chunks-empty">
+                        <div class="chunks-empty-icon">📚</div>
+                        <div>未检索到相关知识切片</div>
                     </div>
                 `;
+                return;
+            }
 
-                resultsEl.insertAdjacentHTML('beforeend', finalAnswerHTML);
-                resultsEl.scrollTop = resultsEl.scrollHeight;
-            } catch (error) {
-                const loadingMessage = resultsEl.lastElementChild;
-                if (loadingMessage && loadingMessage.querySelector('.loading-spinner')) {
-                    loadingMessage.remove();
+            container.innerHTML = chunks.map((chunk, index) => {
+                const isObject = typeof chunk === 'object';
+                const source = isObject ? (chunk.source || '未知来源') : '知识库内容';
+                const score = isObject ? (chunk.score || 0) : 0;
+                const content = isObject ? (chunk.content || chunk) : chunk;
+
+                // Preview first 150 chars
+                const preview = content.length > 150 ? content.substring(0, 150) + '...' : content;
+
+                return `
+                    <div class="chunk-item" data-index="${index}" onclick="toggleChunk(${index})">
+                        <div class="chunk-header-row">
+                            <div class="chunk-checkbox">
+                                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg>
+                            </div>
+                            <div class="chunk-info">
+                                <span class="chunk-source">${escapeHtml(source)}</span>
+                                <span class="chunk-score">相似度: ${(score * 100).toFixed(1)}%</span>
+                            </div>
+                        </div>
+                        <div class="chunk-preview">${escapeHtml(preview)}</div>
+                    </div>
+                `;
+            }).join('');
+
+            updateChunksCount();
+        }
+
+        function toggleChunk(index) {
+            const items = document.querySelectorAll('.chunk-item');
+            const item = items[index];
+
+            if (selectedChunks.has(index)) {
+                selectedChunks.delete(index);
+                item.classList.remove('selected');
+            } else {
+                selectedChunks.add(index);
+                item.classList.add('selected');
+            }
+
+            updateChunksCount();
+            document.getElementById('select-all-chunks').checked = selectedChunks.size === retrievedChunks.length;
+        }
+
+        function toggleSelectAllChunks() {
+            const selectAll = document.getElementById('select-all-chunks').checked;
+            const items = document.querySelectorAll('.chunk-item');
+
+            if (selectAll) {
+                retrievedChunks.forEach((_, index) => {
+                    selectedChunks.add(index);
+                    items[index].classList.add('selected');
+                });
+            } else {
+                selectedChunks.clear();
+                items.forEach(item => item.classList.remove('selected'));
+            }
+
+            updateChunksCount();
+        }
+
+        function updateChunksCount() {
+            document.getElementById('selected-chunks-count').textContent = selectedChunks.size;
+        }
+
+        async function confirmChunks() {
+            // Get selected chunks
+            const selected = Array.from(selectedChunks).map(index => retrievedChunks[index]);
+            closeChunksModal();
+            await generateAnswer(selected);
+        }
+
+        async function generateAnswer(knowledgeChunks) {
+            const container = document.getElementById('chat-messages');
+
+            // Add typing indicator
+            const typingMsg = document.createElement('div');
+            typingMsg.className = 'message message-assistant';
+            typingMsg.innerHTML = `
+                <div class="message-bubble">
+                    <div class="typing-indicator"><span></span><span></span><span></span></div>
+                </div>
+            `;
+            container.appendChild(typingMsg);
+            container.scrollTop = container.scrollHeight;
+
+            try {
+                // Stage 2: Generate answer with selected chunks
+                const enableWeb = pendingEnableWeb;
+                const selectedKnowledge = knowledgeChunks.filter(k => typeof k === 'object');
+
+                const res = await apiPost('/api/chat', {
+                    question: pendingQuestion,
+                    selected_kbs: Array.from(selectedKbs),
+                    selected_knowledge: selectedKnowledge,
+                    enable_web: enableWeb
+                });
+
+                container.removeChild(typingMsg);
+
+                if (res.error) {
+                    showToast('error', '请求失败', res.error);
+                    return;
                 }
-                addMessageToChat(`请求失败: ${error.message}`, 'ai', true);
+
+                // Add assistant message
+                const assistantMsg = document.createElement('div');
+                assistantMsg.className = 'message message-assistant';
+
+                let thinkingHtml = '';
+                if (res.thinking) {
+                    thinkingHtml = `<div class="thinking-box"><div class="thinking-label"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/></svg>思考过程</div>${escapeHtml(res.thinking)}</div>`;
+                }
+
+                let sourcesHtml = '';
+                if (res.local_knowledge && res.local_knowledge.length > 0) {
+                    const sources = res.local_knowledge.filter(k => typeof k === 'object');
+                    if (sources.length > 0) {
+                        sourcesHtml = `<div class="knowledge-tags">${sources.map(s => `<span class="knowledge-tag">${escapeHtml(s.source)}</span>`).join('')}</div>`;
+                    }
+                }
+
+                assistantMsg.innerHTML = `
+                    <div class="message-bubble">
+                        ${thinkingHtml}
+                        <div class="markdown-content">${parseMarkdown(res.final_answer)}</div>
+                        ${sourcesHtml}
+                    </div>
+                    <div class="message-meta">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="vertical-align: middle; margin-right: 4px;"><path d="M12 2a10 10 0 1 0 10 10 4 4 0 0 1-5-5 4 4 0 0 1-5-5"/><path d="M8.5 8.5v.01"/><path d="M16 15.5v.01"/><path d="M12 12v.01"/><path d="M11 17v.01"/><path d="M7 14v.01"/></svg>
+                        AI 助手 · 刚刚
+                    </div>
+                `;
+                container.appendChild(assistantMsg);
+                container.scrollTop = container.scrollHeight;
+
+                // Save message
+                if (currentConversation) {
+                    await apiPost('/api/conversation/' + currentConversation.id + '/message', {
+                        question: pendingQuestion,
+                        answer: res.final_answer,
+                        thinking: res.thinking || ''
+                    });
+                }
+
+            } catch (e) {
+                container.removeChild(typingMsg);
+                showToast('error', '生成失败', '网络错误');
             }
         }
 
-        // 渲染Markdown
-        function renderMarkdown(text) {
+        // ===== History =====
+        function renderHistoryList() {
+            const container = document.getElementById('history-list');
+            if (conversations.length === 0) {
+                container.innerHTML = `
+                    <div class="empty-state">
+                        <div class="empty-icon">📜</div>
+                        <div class="empty-title">暂无历史记录</div>
+                        <div class="empty-desc">开始对话后将显示在这里</div>
+                    </div>
+                `;
+                return;
+            }
+            container.innerHTML = conversations.map(c => `
+                <div class="card" style="margin-bottom: 12px; cursor: pointer;" onclick="switchPage('chat'); loadConversation('${c.id}')">
+                    <div class="card-body" style="display: flex; align-items: center; justify-content: space-between;">
+                        <div>
+                            <div class="card-title">${c.title}</div>
+                            <div class="card-desc">${c.messages ? c.messages.length + ' 条消息' : '0 条消息'}</div>
+                        </div>
+                        <button class="btn btn-ghost btn-icon btn-sm" onclick="event.stopPropagation(); deleteConversation('${c.id}')">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>
+                        </button>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        async function deleteConversation(id) {
+            if (!confirm('确定要删除这个对话吗？')) return;
+            try {
+                const res = await fetch('/api/conversation/' + id, { method: 'DELETE' });
+                const data = await res.json();
+                if (data.success) {
+                    showToast('success', '删除成功', '对话已删除');
+                    loadConversations();
+                }
+            } catch (e) {
+                showToast('error', '删除失败', '网络错误');
+            }
+        }
+
+        // ===== Utilities =====
+        // Simple Markdown Parser
+        function parseMarkdown(text) {
             if (!text) return '';
-            text = escapeHtml(text);
-            text = text.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
-            text = text.replace(/^• (.*$)/gm, '<li>$1</li>');
-            text = text.replace(/^(\d+)\. (.*$)/gm, '<li>$2</li>');
-            if (text.includes('<li>')) {
-                text = text.replace(/(<li>.*?<\/li>)/gs, '<ul>$1</ul>');
-            }
-            text = text.replace(/\n/g, '<br>');
-            return text;
+            // Escape HTML first (but preserve markdown syntax)
+            let html = text
+                .replace(/&/g, '&amp;')
+                .replace(/</g, '&lt;')
+                .replace(/>/g, '&gt;');
+
+            // Code blocks (```code```)
+            html = html.replace(/```([\s\S]*?)```/g, '<pre><code>$1</code></pre>');
+
+            // Inline code (`code`)
+            html = html.replace(/`([^`]+)`/g, '<code>$1</code>');
+
+            // Headers
+            html = html.replace(/^### (.+)$/gm, '<h3>$1</h3>');
+            html = html.replace(/^## (.+)$/gm, '<h2>$1</h2>');
+            html = html.replace(/^# (.+)$/gm, '<h1>$1</h1>');
+
+            // Bold and italic
+            html = html.replace(/\*\*([^*]+)\*\*/g, '<strong>$1</strong>');
+            html = html.replace(/\*([^*]+)\*/g, '<em>$1</em>');
+            html = html.replace(/__([^_]+)__/g, '<strong>$1</strong>');
+            html = html.replace(/_([^_]+)_/g, '<em>$1</em>');
+
+            // Blockquotes
+            html = html.replace(/^&gt; (.+)$/gm, '<blockquote>$1</blockquote>');
+
+            // Horizontal rule
+            html = html.replace(/^---$/gm, '<hr>');
+
+            // Unordered lists (lines starting with - or * or +)
+            html = html.replace(/^[-*+] (.+)$/gm, '<li>$1</li>');
+
+            // Ordered lists (lines starting with number.)
+            html = html.replace(/^\d+\. (.+)$/gm, '<li>$1</li>');
+
+            // Links
+            html = html.replace(/\[([^\]]+)\]\(([^)]+)\)/g, '<a href="$2" target="_blank">$1</a>');
+
+            // Line breaks - convert multiple newlines to paragraph breaks
+            html = html.replace(/\n\n+/g, '</p><p>');
+            html = html.replace(/\n/g, '<br>');
+
+            return html;
         }
 
-        // 转义HTML
+        function showToast(type, title, message) {
+            const container = document.getElementById('toast-container');
+            const toast = document.createElement('div');
+            toast.className = `toast toast-${type}`;
+
+            const icons = {
+                success: '✅',
+                error: '❌',
+                warning: '⚠️'
+            };
+
+            toast.innerHTML = `
+                <div class="toast-icon">${icons[type] || 'ℹ️'}</div>
+                <div class="toast-content">
+                    <div class="toast-title">${title}</div>
+                    <div class="toast-message">${message}</div>
+                </div>
+            `;
+
+            container.appendChild(toast);
+            setTimeout(() => {
+                toast.style.opacity = '0';
+                toast.style.transform = 'translateX(100%)';
+                setTimeout(() => toast.remove(), 300);
+            }, 4000);
+        }
+
+        function formatBytes(bytes) {
+            if (bytes === 0) return '0 B';
+            const k = 1024;
+            const sizes = ['B', 'KB', 'MB', 'GB'];
+            const i = Math.floor(Math.log(bytes) / Math.log(k));
+            return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
+        }
+
         function escapeHtml(text) {
+            if (!text) return '';
             const div = document.createElement('div');
             div.textContent = text;
             return div.innerHTML;
         }
 
-        // 复制回答
-        function copyAnswer() {
-            const answerContents = document.querySelectorAll('.answer-content');
-            if (answerContents.length > 0) {
-                const text = answerContents[answerContents.length - 1].innerText;
-                navigator.clipboard.writeText(text).then(() => {
-                    showAlert('回答已复制到剪贴板', 'success');
-                }).catch(() => {
-                    showAlert('复制失败', 'error');
-                });
-            }
+        function showSettings() {
+            showToast('info', '设置', '设置功能开发中...');
         }
 
-        // 清空聊天（保留为内部函数）
-        function clearChat() {
-            const resultsEl = document.getElementById('chatResults');
-            resultsEl.innerHTML = `
-                <div class="empty-state">
-                    <i class="fas fa-robot"></i>
-                    <p>请先在左侧选择知识库，然后输入您的问题</p>
-                </div>
-            `;
-            document.getElementById('questionInput').value = '';
-        }
-
-        // 新建对话
-        function newChat() {
-            if (selectedKBs.size === 0) {
-                showAlert('请先在左侧选择知识库', 'error');
-                return;
-            }
-            clearChat();
-        }
-
-        // 清空问题
-        function clearQuestion() {
-            document.getElementById('questionInput').value = '';
-        }
-
-        // 回车处理
-        function handleEnter(event) {
-            if (event.key === 'Enter') {
-                askQuestion();
-            }
-        }
-
-        // 显示提示
-        function showAlert(message, type) {
-            const alertBox = document.getElementById('alertBox');
-            const icons = { success: 'fa-check-circle', error: 'fa-times-circle', info: 'fa-info-circle' };
-            alertBox.className = `alert alert-${type} show`;
-            alertBox.innerHTML = `<i class="fas ${icons[type]}"></i> ${message}`;
-
-            setTimeout(() => {
-                alertBox.classList.remove('show');
-            }, 3500);
-        }
-
-        // 渲染历史记录
-        function renderHistory() {
-            const historyEl = document.getElementById('historyList');
-
-            if (chatHistory.length === 0) {
-                historyEl.innerHTML = `
-                    <div class="empty-state" style="padding: 30px;">
-                        <i class="fas fa-clock"></i>
-                        <p>暂无历史记录</p>
-                    </div>
-                `;
-                return;
-            }
-
-            historyEl.innerHTML = chatHistory.map(item => `
-                <div class="history-item" onclick="loadHistoryQuestion('${item.question}')">
-                    <div class="history-item-question">${item.question}</div>
-                    <div class="history-item-time">${item.time.toLocaleString()}</div>
-                </div>
-            `).join('');
-        }
-
-        // 加载历史问题
-        function loadHistoryQuestion(question) {
-            document.getElementById('questionInput').value = question;
-            currentQuestion = question;
-            askQuestion();
-        }
-
-        // 显示帮助
-        function showHelp() {
-            alert('使用指南：\n1. 创建知识库\n2. 上传文档\n3. 构建向量库\n4. 选择知识库并提问', 'info');
-        }
-
-        // 显示关于
-        function showAbout() {
-            alert('智慧知识库问答系统 v1.0\n学校专用智能问答平台', 'info');
-        }
+        // Close modal on overlay click
+        document.querySelectorAll('.modal-overlay').forEach(overlay => {
+            overlay.addEventListener('click', e => {
+                if (e.target === overlay) overlay.classList.remove('active');
+            });
+        });
     </script>
 </body>
 </html>
