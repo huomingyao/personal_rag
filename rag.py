@@ -33,7 +33,7 @@ except ImportError as e:
     print("  pip install langchain-community langchain-huggingface langchain-text-splitters")
 
 # ===================== Flask应用初始化 =====================
-app = Flask(__name__, template_folder='.')
+app = Flask(__name__, template_folder='.', static_folder='templates', static_url_path='/static')
 app.config['MAX_CONTENT_LENGTH'] = MAX_CONTENT_LENGTH
 
 # 注册Blueprint
