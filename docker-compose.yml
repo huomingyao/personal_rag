@@ -1,0 +1,22 @@
+services:
+  rag:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: personal_rag
+    ports:
+      - "5000:5000"
+    environment:
+      - MINIMAX_API=${MINIMAX_API}
+    volumes:
+      - rag_data:/app/data
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:5000/api/kb/list"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 10s
+
+volumes:
+  rag_data:
