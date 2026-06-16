@@ -5,8 +5,7 @@ WORKDIR /app
 
 # 安装编译依赖
 RUN apt-get update && apt-get install -y --no-install-recommends \
-    build-essential \
-    && rm -rf /var/lib/apt/lists/*
+    build-essential && rm -rf /var/lib/apt/lists/*
 
 # 复制依赖文件
 COPY requirements.txt .
@@ -20,7 +19,8 @@ FROM python:3.11-slim
 WORKDIR /app
 
 # 安装运行时依赖
-RUN apt-get install -y --no-install-recommends curl && rm -rf /var/lib/apt/lists/*
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    curl && rm -rf /var/lib/apt/lists/*
 
 # 从 builder 复制已安装的包
 COPY --from=builder /install /usr/local
